@@ -1,0 +1,40 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      - image: node:latest
+
+    working_directory: ~/react-table
+
+    branches:
+      only:
+        - master # 这个是配置文件的分支名，注意不要写错分支
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - run: git checkout .
+      - run: git checkout gh-pages #
+      - run: git reset --hard origin/master # 同上
+      - run: npm run docz:build
+      - run: mv website/* ./
+      - run: git add .
+      - run: git add -u
+      - run: git config user.name "zWingz"
+      - run: git config user.email "371657110@qq.com"
+      - run: git commit -m "Updated by circleci - `date`"
+      - run: git push --force origin gh-pages

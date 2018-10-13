@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "lib": [
+      "es7",
+      "dom",
+    ],
+    "jsx": "react",
+    "target": "es6",
+    // "target": "es2016",
+    "module" : "esNext",
+    // "module" : "esNext",
+    "moduleResolution": "node",
+    "types": ["react", "node"],
+    "paths": {
+    },
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    // "experimentalDecorators": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"],
+  "files": [
+    ".d.ts"
+  ]
+}

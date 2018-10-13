@@ -1,0 +1,27 @@
+.no-select {
+  user-select: none;
+}
+.virtual-scroll {
+  opacity: 1;
+  height: 9px;
+  // background: rgba(0,0,0,.2);
+  background: #eee;
+  position: absolute;
+  bottom: 10px;
+  right: 0px;
+  left: 0px;
+  transform: translate3d(0, 0, 0);
+  transition: opacity 0.2s ease-in-out;
+  border-radius: 4px;
+  z-index: 2;
+}
+.virtual-scroll-bar {
+  background: #2d3041;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: inherit;
+  height: 9px;
+  cursor: pointer;
+  &:hover {
+    background: rgba(0, 0, 0, 0.4);
+  }
+}

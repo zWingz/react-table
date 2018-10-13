@@ -1,0 +1,30 @@
+
+.scroll-container {
+  overflow: auto;
+  &::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+    border-radius: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #eee;
+    // background: rgba(0, 0, 0, .33);
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background: #aaa;
+    background: rgba(0, 0, 0, 0.2);
+    &:hover {
+      background: #666;
+      background: rgba(0, 0, 0, 0.4);
+    }
+  }
+  &::-webkit-scrollbar-button {
+    // cursor: pointer;
+    // background: #eee;
+    display: none;
+    // background-repeat: no-repeat;
+    // background-position: center;
+    border-radius: 4px;
+  }
+}
