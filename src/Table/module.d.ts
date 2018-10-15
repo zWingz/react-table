@@ -4,8 +4,6 @@ export interface ColumnProps<T> {
   dataIndex?: keyof T
   render?: (text: any, record: T, index: number) => React.ReactNode
   align?: 'left' | 'right' | 'center'
-  colSpan?: number
-  width?: string | number
   className?: string
   fixed?: boolean | ('left' | 'right')
 }
