@@ -15,4 +15,5 @@ export interface TableProp<T> {
   className?: string
   style?: React.CSSProperties
   offsetTop?: number
+  scrollBarOffset?: number
 }

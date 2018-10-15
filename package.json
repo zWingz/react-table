@@ -1,7 +1,7 @@
 {
   "name": "@zzwing/react-table",
   "version": "1.0.0",
-  "description": "react fixed table component",
+  "description": "A react fixed table component",
   "main": "dist/index.js",
   "module": "es/index.js",
   "keywords": [

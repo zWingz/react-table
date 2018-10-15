@@ -42,7 +42,7 @@ class BaseTable<T = any> extends React.PureComponent<BaseTableProp<T>> {
       <thead className={top ? 'fixed' : ''} style={this.theadStyle}>
         <tr>
           {columns.map((each, idx) => (
-            <th key={idx}>{each.title}</th>
+            <th className={each.className} key={idx}>{each.title}</th>
           ))}
         </tr>
       </thead>
@@ -68,6 +68,7 @@ class BaseTable<T = any> extends React.PureComponent<BaseTableProp<T>> {
                 }
                 return (
                   <td
+                    className={column.className}
                     style={{textAlign: column.align}}
                     key={key || (dataIndex as string) || keyValue + columnIdx}
                   >

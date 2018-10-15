@@ -164,7 +164,7 @@ class Table<T> extends React.PureComponent<TableProp<T>> {
     this.removeEffect()
   }
   render() {
-    const { dataSource, rowKey, className } = this.props
+    const { dataSource, rowKey, className, scrollBarOffset } = this.props
     const { left, body, right } = this.formatData
     const commonProp = {
       dataSource,
@@ -189,7 +189,7 @@ class Table<T> extends React.PureComponent<TableProp<T>> {
               {...commonProp}
             />
           )}
-          <ScrollBar className='flex-grow'>
+          <ScrollBar className='flex-grow' offsetBottom={scrollBarOffset}>
             <BaseTable
               style={this.tableContentStyle}
               getRef={el => {

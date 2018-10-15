@@ -1,17 +1,50 @@
-# React Fixed Table
-[![CircleCI](https://circleci.com/gh/zWingz/react-table/tree/master.svg?style=svg)](https://circleci.com/gh/zWingz/react-table/tree/master)
+---
+name: Table
+route: /table
+order: 4
+---
+import { Table } from '../src'
+import { Playground } from 'docz'
+import {mock} from 'mockjs'
 
-[DEMO](http://zwing.site/react-table/#/)
+# Table
 
-## Install
+## Description
 
-`$ npm install @zzwing/react-table`
+- Fixed `thead` by window `scroll` events, use `translate`
+- Fixed `left` and `right` by `absolute`
 
-`import { Table, HorizontalScrollBar } from '@zzwing/react-table'`
+<Playground>
+  {
+    () => {
+      const fieldKey = []
+      const fieldCount = 10
+      let i = 0
+      for(; i < fieldCount; i ++) {
+        fieldKey.push('field' + i)
+      }
+      const columns = fieldKey.map((each, idx) => ({
+        title: each,
+        dataIndex: each,
+        fixed: idx === 0 ? 'left' : (idx === (fieldCount - 1) ? 'right' : false)
+      }))
+      const mockJson = fieldKey.reduce((json, each) => {
+        json[each] = '@sentence(2,3)'
+        return json
+      }, {})
 
-## Usage
+      const mockData = mock({
+        'list|50': [mockJson],
+      })
+      const dataSource = mock(mockData).list
+      return <Table columns={columns} dataSource={dataSource} rowKey='field1'/>
+    }
+  }
 
-### Table
+</Playground>
+
+
+## Props
 
 | Props | Type | Default  | Desc |
 | ----- | ---- | ---- | ------- |
@@ -35,7 +68,7 @@ interface TableProp<T> {
 }
 ```
 
-#### ColumnsProps
+### ColumnsProps
 
 | Props | Type | Default  | Desc |
 | ----- | ---- | ---- | ------- |
@@ -43,9 +76,8 @@ interface TableProp<T> {
 | key | string | `none` | column key |
 | dataIndex | string | '' | datasources key |
 | render | (text, record, index) => any | () => {} | column render function |
-| align | `left` &#124; `right` &#124; `center` | `center` | column align |
+| align | `left` &#124; `right` &#124; `center` &#124; `center` | column align |
 | className | string | '' | column className |
-| fixed | `left` &#124; `right` &#124; `right` | `false` | column fixed flag |
 
 ```typescript
 interface ColumnProps<T> {
@@ -56,22 +88,5 @@ interface ColumnProps<T> {
   align?: 'left' | 'right' | 'center'
   className?: string
   fixed?: boolean | ('left' | 'right')
-}
-```
-
-
-### ScrollBar
-
-| Props | Type | Default  | Desc |
-| ----- | ---- | ---- | ------- |
-| className | string | '' | scrollbar className |
-| scrollTarget | string &#124; HTMLElement | window | native scroll container |
-| offsetBottom | number | 5 | scrollbar bottom offset |
-
-```typescript
-interface HorizontalScrollBarProp {
-  className?: string
-  scrollTarget?: string | HTMLElement
-  offsetBottom?: number
 }
 ```

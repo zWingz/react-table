@@ -1,25 +1,28 @@
 import React from 'react'
 import { timerFnc, addResizeEventListener } from '../utils'
 import classnames from 'classnames'
-
 import './style.scss'
 export interface HorizontalScrollBarProp {
   // scrollTarget: React.ReactNode
   className?: string
+  scrollTarget?: string | HTMLElement
+  offsetBottom?: number
 }
 
 interface HorizontalScrollBarStat {
   width: number,
-    left: number,
-    percent: number, // 滚动按钮宽度占比
-    x: number, // 鼠标按键x坐标
-    bottom: number, // 底部
-    scrollLeft: number,
-    // opacity: number // 是否需要设置透明
+  left: number,
+  percent: number, // 滚动按钮宽度占比
+  x: number, // 鼠标按键x坐标
+  bottom: number, // 底部
+  scrollLeft: number,
+  // opacity: number // 是否需要设置透明
 }
 
 class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, HorizontalScrollBarStat> {
-
+  static defaultProps = {
+    offsetBottom: 5
+  }
   /**
    * @function
    * 计算往左滚动距离
@@ -40,13 +43,14 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
    * 滚动条位置
    */
   get outerStyle() {
+    const { offsetBottom } = this.props
     const { bottom } = this.state
     return {
-      transform: `translate3d(0px, ${-bottom}px, 0px)`
+      transform: `translate3d(0px, ${-bottom}px, 0px)`,
+      bottom: offsetBottom + 'px'
       // opacity: (bottom > 5 && percent < 1) ? 1 : 0
     }
   }
-  scroller = null
 
   state: HorizontalScrollBarStat = {
     width: 0,
@@ -60,28 +64,9 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
   _isMounted = false
   iframe: HTMLObjectElement = null // iframe,用来监听resize
   // observer = {}
-
+  scroller: HTMLElement | Window = null
   $bar: React.RefObject<HTMLDivElement> = null
   $target: React.RefObject<HTMLDivElement> = null
-  // windowScrollHandle = timerFnc(
-  //   () => {
-  //     const { bottom } = this.$target.current.getBoundingClientRect()
-  //     const { clientHeight } = document.documentElement
-  //     const result = Math.max(
-  //       -clientHeight,
-  //       bottom - clientHeight,
-  //       0
-  //     )
-  //     this.setState({
-  //       bottom: result
-  //     })
-  //     this.setOpacity(1)
-  //   },
-  //   250,
-  //   () => {
-  //     this.setOpacity(0)
-  //   }
-  // )
 
   /**
    * @function
@@ -104,15 +89,12 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
         width: nextWidth,
         percent: nextPercent
       })
-      this.windowScrollHandle()
+      this.onScrollHandle()
       this.targetScrollHandle()
     },
     250
-    // () => {
-    //   this.setOpacity(0)
-    // }
   )
-  constructor(props) {
+  constructor(props: HorizontalScrollBarProp) {
     super(props)
     this.$bar = React.createRef()
     this.$target = React.createRef()
@@ -122,17 +104,24 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
    * @function
    * 监听全局滚动, 用来将虚拟滚动条固定在底部
    */
-  windowScrollHandle = () => {
+  onScrollHandle = () => {
       const { bottom } = this.$target.current.getBoundingClientRect()
-      const { clientHeight } = document.documentElement
+      let offset = 0
+      const { scroller } = this
+      if (scroller === window) {
+        offset = document.documentElement.clientHeight
+      } else {
+        const { top } = (scroller as HTMLElement).getBoundingClientRect()
+        const { clientHeight } = (scroller as HTMLElement)
+        offset = top + clientHeight
+      }
       const result = Math.max(
-        bottom - clientHeight,
+        bottom - offset,
         0
       )
       this.setState({
         bottom: result
       })
-      // this.setOpacity(1)
     }
   /**
    * @function
@@ -239,10 +228,20 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
   }
   componentDidMount() {
     this._isMounted = true
-    window.addEventListener('scroll', this.windowScrollHandle, {
+    const { scrollTarget } = this.props
+    if(!scrollTarget) {
+      this.scroller = window
+    } else {
+      if (typeof scrollTarget === 'string') {
+        (this.scroller as HTMLElement) = document.getElementById(scrollTarget)
+      } else {
+        this.scroller = scrollTarget
+      }
+    }
+    this.scroller.addEventListener('scroll', this.onScrollHandle, {
       passive: true
     })
-    window.addEventListener('resize', this.windowScrollHandle, false)
+    this.scroller.addEventListener('resize', this.onScrollHandle, false)
     this.$target.current.addEventListener(
       'scroll',
       this.targetScrollHandle,
@@ -256,8 +255,8 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
   }
   componentWillUnmount() {
     this._isMounted = false
-    window.removeEventListener('scroll', this.windowScrollHandle)
-    window.removeEventListener('resize', this.windowScrollHandle)
+    this.scroller.removeEventListener('scroll', this.onScrollHandle)
+    this.scroller.removeEventListener('resize', this.onScrollHandle)
     this.iframe.removeEventListener('resize', this.refreshScroll)
     this.iframe.remove()
   }
