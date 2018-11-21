@@ -15,7 +15,8 @@
   "files": [
     "dist",
     "es",
-    "src"
+    "src",
+    "./index.d.ts"
   ],
   "scripts": {
     "docz": "docz dev",
