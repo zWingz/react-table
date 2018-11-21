@@ -164,12 +164,13 @@ class Table<T> extends React.PureComponent<TableProp<T>> {
     this.removeEffect()
   }
   render() {
-    const { dataSource, rowKey, className, scrollBarOffset } = this.props
+    const { dataSource, rowKey, className, scrollBarOffset, onRow } = this.props
     const { left, body, right } = this.formatData
     const commonProp = {
       dataSource,
       top: this.state.top,
-      rowKey
+      rowKey,
+      onRow
     }
     return (
       <>

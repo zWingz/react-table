@@ -1,7 +1,7 @@
 import React from 'react'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
-import { ColumnProps } from './module'
+import { ColumnProps, TableRowProp } from './module'
 
 interface BaseTableProp<T> {
   columns?: ColumnProps<T>[]
@@ -10,7 +10,8 @@ interface BaseTableProp<T> {
   top?: string | number,
   getRef?: (ref: any) => void,
   className?: string
-  style?: React.CSSProperties
+  style?: React.CSSProperties,
+  onRow?: (record: T) => TableRowProp
 }
 
 class BaseTable<T = any> extends React.PureComponent<BaseTableProp<T>> {
@@ -50,13 +51,18 @@ class BaseTable<T = any> extends React.PureComponent<BaseTableProp<T>> {
   }
 
   renderTbody() {
-    const { columns, dataSource, rowKey } = this.props
+    const { columns, dataSource, rowKey, onRow } = this.props
     return (
       <tbody>
         {dataSource.map((record, idx) => {
           const keyValue = record[rowKey] + ''
+          const trProp: TableRowProp = {}
+          if(onRow) {
+            const rowProp = onRow(record) || {}
+            Object.assign(trProp, rowProp)
+          }
           return (
-            <tr key={keyValue}>
+            <tr key={keyValue} {...trProp}>
               {columns.map((column, columnIdx) => {
                 let value = null
                 const { dataIndex, render, key } = column
