@@ -54,6 +54,7 @@ import {mock} from 'mockjs'
 | className | string | '' | table classname |
 | style | object | `{}` | table style |
 | offsetTop | number | `0` | thead offsetTop |
+| onRow | (record: T) => TableRowProp| null | tableRow prop |
 | scrollBarOffset | number | 5 | scrollbar offset bottom |
 
 ```typescript
@@ -65,7 +66,10 @@ interface TableProp<T> {
   style?: React.CSSProperties
   offsetTop?: number
   scrollBarOffset?: number
+  onRow?: (record: T) => TableRowProp
 }
+
+type TableRowProp = Partial<HTMLAttributes<HTMLTableRowElement>>
 ```
 
 ### ColumnsProps

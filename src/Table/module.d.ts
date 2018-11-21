@@ -1,3 +1,5 @@
+import { HTMLAttributes } from "react";
+
 export interface ColumnProps<T> {
   title?: React.ReactNode
   key?: React.Key
@@ -8,6 +10,9 @@ export interface ColumnProps<T> {
   fixed?: boolean | ('left' | 'right')
 }
 
+export type TableRowProp = Partial<HTMLAttributes<HTMLTableRowElement>>
+
+
 export interface TableProp<T> {
   columns?: ColumnProps<T>[]
   dataSource?: T[]
@@ -16,4 +21,5 @@ export interface TableProp<T> {
   style?: React.CSSProperties
   offsetTop?: number
   scrollBarOffset?: number
+  onRow?: (record: T) => TableRowProp
 }
