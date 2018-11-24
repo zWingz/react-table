@@ -11,6 +11,7 @@ export default {
     mode: 'light'
   },
   hashRouter: true,
+  codeSandbox: false,
   plugins: [
     css({
       preprocessor: 'sass'
