@@ -1,4 +1,5 @@
-import React, { RefObject } from 'react'
+import * as React from 'react'
+import { RefObject } from 'react'
 import PropTypes from 'prop-types'
 import { TableProp, PlainObject, ColumnProps } from './module'
 import BaseTable from './BaseTable'

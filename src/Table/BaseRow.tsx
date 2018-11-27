@@ -1,10 +1,14 @@
-import React, { HTMLAttributes } from 'react'
+import * as React from 'react'
+import { HTMLAttributes } from 'react'
 import { PlainObject, ColumnProps } from './module'
 
 type RowProp = Partial<HTMLAttributes<HTMLTableRowElement>>
 
-function getChainObject(obj: PlainObject, path: string) {
+export function getChainObject(obj: PlainObject, path: string) {
   const keys = path.split('.')
+  if(keys.length === 1) {
+    return obj[path]
+  }
   const len = keys.length
   let tra = obj
   for (let i = 0; i < len; i++) {
@@ -27,7 +31,7 @@ interface TableRowProp<T> {
   onRow?: (record: T) => RowProp
 }
 
-export default React.memo(function TableRow<T>(props: TableRowProp<T>) {
+export default React.memo(function TableRow<T extends PlainObject = any>(props: TableRowProp<T>) {
   const { record, onRow, columns, rowIndex } = props
     const trProp: RowProp = {}
     if (onRow) {

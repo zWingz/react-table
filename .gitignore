@@ -57,3 +57,4 @@ lib/**
 es
 .awcache
 package-lock.json
+coverage/
