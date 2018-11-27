@@ -1,9 +1,9 @@
 import React from 'react'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
-import { ColumnProps, TableRowProp } from './module'
-
-interface BaseTableProp<T> {
+import { ColumnProps, TableRowProp, PlainObject } from './module'
+import BaseRow from './BaseRow'
+interface BaseTableProp<T extends PlainObject = any> {
   columns?: ColumnProps<T>[]
   dataSource?: T[]
   rowKey?: string
@@ -14,7 +14,7 @@ interface BaseTableProp<T> {
   onRow?: (record: T) => TableRowProp
 }
 
-class BaseTable<T = any> extends React.PureComponent<BaseTableProp<T>> {
+class BaseTable<T extends PlainObject = any> extends React.PureComponent<BaseTableProp<T>> {
   static propTypes = {
     dataSource: PropTypes.array,
     columns: PropTypes.array,
@@ -55,35 +55,14 @@ class BaseTable<T = any> extends React.PureComponent<BaseTableProp<T>> {
     return (
       <tbody>
         {dataSource.map((record, idx) => {
-          const keyValue = record[rowKey] + ''
-          const trProp: TableRowProp = {}
-          if(onRow) {
-            const rowProp = onRow(record) || {}
-            Object.assign(trProp, rowProp)
-          }
-          return (
-            <tr key={keyValue} {...trProp}>
-              {columns.map((column, columnIdx) => {
-                let value = null
-                const { dataIndex, render, key } = column
-                if (dataIndex) {
-                  value = record[dataIndex]
-                }
-                if (render) {
-                  value = render(value, record, idx)
-                }
-                return (
-                  <td
-                    className={column.className}
-                    style={{textAlign: column.align}}
-                    key={key || (dataIndex as string) || keyValue + columnIdx}
-                  >
-                    {value}
-                  </td>
-                )
-              })}
-            </tr>
-          )
+          const key = record[rowKey] + ''
+          return <BaseRow
+            key={key}
+            record={record}
+            rowIndex={idx}
+            onRow={onRow}
+            columns={columns}
+          />
         })}
       </tbody>
     )

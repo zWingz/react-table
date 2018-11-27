@@ -4,6 +4,8 @@ import './style'
 import { Table } from '../src'
 import { mock } from 'mockjs'
 
+declare const module: any
+
 const App = hot(module)(() => {
   const fieldKey = []
   const fieldCount = 10

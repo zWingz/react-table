@@ -1,6 +1,8 @@
 import React, { HTMLAttributes } from "react";
-
-export interface ColumnProps<T> {
+type PlainObject = {
+  [key: string]: any
+}
+export interface ColumnProps<T extends PlainObject = any> {
   title?: React.ReactNode
   key?: React.Key
   dataIndex?: keyof T
@@ -13,7 +15,7 @@ export interface ColumnProps<T> {
 export type TableRowProp = Partial<HTMLAttributes<HTMLTableRowElement>>
 
 
-export interface TableProp<T> {
+export interface TableProp<T extends PlainObject = any> {
   columns?: ColumnProps<T>[]
   dataSource?: T[]
   rowKey?: string
@@ -39,7 +41,7 @@ interface HorizontalScrollBarStat {
   // opacity: number // 是否需要设置透明
 }
 
-export interface BaseTableProp<T> {
+export interface BaseTableProp<T extends PlainObject = any> {
   columns?: ColumnProps<T>[];
   dataSource?: T[];
   rowKey?: string;
@@ -52,7 +54,7 @@ export interface BaseTableProp<T> {
 
 declare module "@zzwing/react-table" {
   // type definitions goes here
-  class BaseTable<T = any> extends React.PureComponent<BaseTableProp<T>> {}
-  class Table<T> extends React.PureComponent<TableProp<T>> {}
+  class BaseTable<T extends PlainObject = any> extends React.PureComponent<BaseTableProp<T>> {}
+  class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T>> {}
   class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, HorizontalScrollBarStat> {}
 }

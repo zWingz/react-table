@@ -1,6 +1,9 @@
 import { HTMLAttributes } from "react";
+export type PlainObject = {
+  [key: string]: any
+}
 
-export interface ColumnProps<T> {
+export interface ColumnProps<T extends PlainObject = any> {
   title?: React.ReactNode
   key?: React.Key
   dataIndex?: keyof T
@@ -13,7 +16,7 @@ export interface ColumnProps<T> {
 export type TableRowProp = Partial<HTMLAttributes<HTMLTableRowElement>>
 
 
-export interface TableProp<T> {
+export interface TableProp<T extends PlainObject = any> {
   columns?: ColumnProps<T>[]
   dataSource?: T[]
   rowKey?: string

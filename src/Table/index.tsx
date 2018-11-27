@@ -1,6 +1,6 @@
 import React, { RefObject } from 'react'
 import PropTypes from 'prop-types'
-import { TableProp } from './module'
+import { TableProp, PlainObject, ColumnProps } from './module'
 import BaseTable from './BaseTable'
 import ScrollBar from '../HorizontalScrollBar'
 import './style.scss'
@@ -12,7 +12,7 @@ function querySelectorAll(selector, context) {
   return Array.prototype.slice.call(dom, 0)
 }
 
-class Table<T> extends React.PureComponent<TableProp<T>> {
+class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T>> {
 
   static propTypes = {
     dataSource: PropTypes.array,
@@ -32,14 +32,20 @@ class Table<T> extends React.PureComponent<TableProp<T>> {
   content: RefObject<HTMLDivElement> = null
   fixedLeft = false
   fixedRight = false
+  cacheColumns = []
+  cacheData = null
 
   constructor(props) {
     super(props)
     this.content = React.createRef()
   }
 
-  get formatData() {
+  get formatData(): {[k in 'left' | 'right' | 'body']: ColumnProps<T>[]} {
     const { columns } = this.props
+    if (columns === this.cacheColumns && this.cacheData) {
+      return this.cacheData
+    }
+    this.cacheColumns = columns
     const left = []
     const body = []
     const right = []
@@ -57,11 +63,12 @@ class Table<T> extends React.PureComponent<TableProp<T>> {
     })
     this.fixedLeft = !!left.length
     this.fixedRight = !!right.length
-    return {
+    this.cacheData = {
       left,
       body,
       right
     }
+    return this.cacheData
   }
 
   get tableContentStyle() {
@@ -181,7 +188,7 @@ class Table<T> extends React.PureComponent<TableProp<T>> {
           onMouseOut={this.onMouseOut}
         >
           {this.fixedLeft && (
-            <BaseTable
+            <BaseTable<T>
               getRef={el => {
                 this.$left = el
               }}
@@ -191,7 +198,7 @@ class Table<T> extends React.PureComponent<TableProp<T>> {
             />
           )}
           <ScrollBar className='flex-grow' offsetBottom={scrollBarOffset}>
-            <BaseTable
+            <BaseTable<T>
               style={this.tableContentStyle}
               getRef={el => {
                 this.$tbody = el
@@ -201,7 +208,7 @@ class Table<T> extends React.PureComponent<TableProp<T>> {
             />
           </ScrollBar>
           {this.fixedRight && (
-            <BaseTable
+            <BaseTable<T>
               getRef={el => {
                 this.$right = el
               }}

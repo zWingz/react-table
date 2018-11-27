@@ -14,6 +14,20 @@ import {mock} from 'mockjs'
 - Fixed `thead` by window `scroll` events, use `translate`
 - Fixed `left` and `right` by `absolute`
 
+### Base Use
+``` typescript
+const dataSource = []
+const column = [{
+  title: 'id',
+  dataIndex: 'id'
+}, {
+  title: 'column1',
+  dataIndex: 'column1'
+}]
+
+<Table dataSource={dataSource} columns={column} rowKey='id'/>
+```
+
 <Playground>
   {
     () => {
@@ -32,7 +46,6 @@ import {mock} from 'mockjs'
         json[each] = '@sentence(2,3)'
         return json
       }, {})
-
       const mockData = mock({
         'list|50': [mockJson],
       })
@@ -43,6 +56,45 @@ import {mock} from 'mockjs'
 
 </Playground>
 
+### ChainPath
+
+```typescript
+const columns = [{
+  title: 'other',
+  dataIndex: 'other.value'
+}]
+
+```
+
+<Playground>
+  {
+    () => {
+      const fieldKey = []
+      const fieldCount = 10
+      let i = 0
+      for(; i < fieldCount; i ++) {
+        fieldKey.push('field' + i)
+      }
+      const columns = fieldKey.map((each, idx) => ({
+        title: each,
+        dataIndex: each === 'field1' ? each : each + '.value',
+        fixed: idx === 0 ? 'left' : (idx === (fieldCount - 1) ? 'right' : false)
+      }))
+      const mockJson = fieldKey.reduce((json, each) => {
+        json[each] = each === 'field1' ? '@sentence(2,3)' : {
+          value: '@sentence(2,3)'
+        }
+        return json
+      }, {})
+      const mockData = mock({
+        'list|10': [mockJson],
+      })
+      const dataSource = mock(mockData).list
+      return <Table columns={columns} dataSource={dataSource} rowKey='field1'/>
+    }
+  }
+
+</Playground>
 
 ## Props
 
@@ -58,7 +110,10 @@ import {mock} from 'mockjs'
 | scrollBarOffset | number | 5 | scrollbar offset bottom |
 
 ```typescript
-interface TableProp<T> {
+type PlainObject = {
+  [key: string]: any
+}
+export interface TableProp<T extends PlainObject = any> {
   columns?: ColumnProps<T>[]
   dataSource?: T[]
   rowKey?: string
@@ -68,7 +123,6 @@ interface TableProp<T> {
   scrollBarOffset?: number
   onRow?: (record: T) => TableRowProp
 }
-
 type TableRowProp = Partial<HTMLAttributes<HTMLTableRowElement>>
 ```
 
@@ -84,7 +138,7 @@ type TableRowProp = Partial<HTMLAttributes<HTMLTableRowElement>>
 | className | string | '' | column className |
 
 ```typescript
-interface ColumnProps<T> {
+interface ColumnProps<T extends PlainObject = any> {
   title?: React.ReactNode
   key?: React.Key
   dataIndex?: keyof T
