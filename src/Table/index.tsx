@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { RefObject } from 'react'
-import PropTypes from 'prop-types'
+import * as PropTypes from 'prop-types'
 import { TableProp, PlainObject, ColumnProps } from './module'
 import BaseTable from './BaseTable'
 import ScrollBar from '../HorizontalScrollBar'
@@ -225,7 +225,7 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
           // just use a lower zIndex dom, but it must be outside of table dom
           // fixed thead shake in Chrome when scroll outside table
         }
-        <div style={{ zIndex: 1, position: 'fixed' }} />
+        <div id='fixed-table-magic' style={{ zIndex: 1, position: 'fixed' }} />
       </>
     )
   }

@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test table base render 1`] = `
+<Fragment>
+  <div
+    className="fixed-table-container"
+    onMouseOut={[Function]}
+    onMouseOver={[Function]}
+  >
+    <HorizontalScrollBar
+      className="flex-grow"
+      offsetBottom={5}
+    >
+      <BaseTable
+        columns={
+          Array [
+            Object {
+              "dataIndex": "id",
+              "title": "id",
+            },
+            Object {
+              "dataIndex": "createTime",
+              "title": "createTime",
+            },
+            Object {
+              "dataIndex": "name",
+              "title": <span>
+                jsx title
+              </span>,
+            },
+            Object {
+              "className": "th-custom-class",
+              "dataIndex": "title",
+              "title": "title",
+            },
+          ]
+        }
+        dataSource={
+          Array [
+            Object {
+              "createTime": "1976-04-02",
+              "id": "440000200106140115",
+              "name": "尹娟",
+              "title": "目派与响清",
+            },
+            Object {
+              "createTime": "1978-12-17",
+              "id": "130000199202167395",
+              "name": "程丽",
+              "title": "无北共外",
+            },
+            Object {
+              "createTime": "2012-12-06",
+              "id": "640000197411167747",
+              "name": "何桂英",
+              "title": "周切程",
+            },
+            Object {
+              "createTime": "1990-07-18",
+              "id": "440000197608270476",
+              "name": "黄杰",
+              "title": "一和下",
+            },
+          ]
+        }
+        getRef={[Function]}
+        rowKey="id"
+        style={
+          Object {
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+          }
+        }
+        top={0}
+      />
+    </HorizontalScrollBar>
+  </div>
+  <div
+    id="fixed-table-magic"
+    style={
+      Object {
+        "position": "fixed",
+        "zIndex": 1,
+      }
+    }
+  />
+</Fragment>
+`;

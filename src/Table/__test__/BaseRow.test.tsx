@@ -57,13 +57,15 @@ describe('test BaseRow', () => {
       expect(wrapper.find('td')).toHaveLength(2)
       expect(wrapper.find('td').at(1).text()).toEqual(record.user.name)
     })
-    it('test chain dataIndex', () => {
+    it('test custom render', () => {
       const render = jest.fn()
-      render.mockReturnValue('custom-render-text')
+      const click = jest.fn()
+      render.mockReturnValue(<div className='custom-render' onClick={click}>custom-render-text</div>)
       // console.log(render())
       const columns: TestDataType = [...baseColumns, {
         title: 'customRender',
-        render
+        render,
+        key: 'row-key'
       }]
       const indx = 1
       const wrapper = unwrapMemo(<BaseRow columns={columns} record={record} rowIndex={indx}/>)
@@ -71,6 +73,58 @@ describe('test BaseRow', () => {
       expect(render).toBeCalledTimes(1)
       expect(render).toBeCalledWith(null, record, indx)
       expect(wrapper.find('td').at(1).text()).toEqual('custom-render-text')
+      wrapper.find('.custom-render').simulate('click')
+      expect(click).toBeCalledTimes(1)
+    })
+    it('test row key', () => {
+      const columns: TestDataType = [...baseColumns, {
+        title: 'customRender',
+        render: () => 'customRender',
+        key: 'row-key'
+      }, {
+        title: 'filed',
+        render: () => 'test'
+      }]
+      const indx = 1
+      const wrapper = unwrapMemo(<BaseRow columns={columns} record={record} rowIndex={indx}/>)
+      expect(wrapper.find('td')).toHaveLength(3)
+      expect(wrapper.find('td').at(0).key()).toEqual('id')
+      expect(wrapper.find('td').at(1).key()).toEqual('row-key')
+      expect(wrapper.find('td').at(2).key()).toEqual('2')
+    })
+    it('test align', () => {
+      const columns: TestDataType = [{
+        title: '',
+        dataIndex: 'id',
+        align: 'right'
+      }]
+      const wrapper = unwrapMemo(<BaseRow columns={columns} record={record} rowIndex={0}/>)
+      expect(wrapper.find('td').props().style.textAlign).toEqual('right')
+    })
+    it('test onRow return object', () => {
+      const onRow = jest.fn()
+      const click = jest.fn()
+      const onRowReturn = {
+        className: 'onRow-className',
+        onClick: click
+      }
+      onRow.mockReturnValue(onRowReturn)
+      const wrapper = unwrapMemo(<BaseRow onRow={onRow} columns={baseColumns} record={record} rowIndex={0}/>)
+      expect(onRow).toBeCalledTimes(1)
+      const tr = wrapper.find('tr')
+      expect(tr.props()).toMatchObject(onRowReturn)
+      tr.simulate('click')
+      expect(click).toBeCalledTimes(1)
+    })
+    it('test onRow return Falsy', () => {
+      const onRow = jest.fn()
+      onRow.mockReturnValue(undefined)
+      const wrapper = unwrapMemo(<BaseRow onRow={onRow} columns={baseColumns} record={record} rowIndex={0}/>)
+      expect(onRow).toBeCalledTimes(1)
+      const tr = wrapper.find('tr')
+      expect(tr.props()).toMatchObject({
+        children: {}
+      })
     })
   })
 })

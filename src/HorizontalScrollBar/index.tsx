@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { timerFnc, addResizeEventListener } from '../utils'
 import classnames from 'classnames'
 import './style.scss'

@@ -35,8 +35,8 @@ export default React.memo(function TableRow<T extends PlainObject = any>(props: 
   const { record, onRow, columns, rowIndex } = props
     const trProp: RowProp = {}
     if (onRow) {
-      const { className } = onRow(record)
-      trProp.className = className
+      const onRowProp = onRow(record) || {}
+      Object.assign(trProp, onRowProp)
     }
     return (
       <tr {...trProp}>
@@ -56,8 +56,9 @@ export default React.memo(function TableRow<T extends PlainObject = any>(props: 
           return (
             <td
               style={{ textAlign: column.align }}
+              className={column.className}
               key={
-                key || (dataIndex as string) || dataIndex + columnIdx.toString()
+                key || (dataIndex as string) || columnIdx.toString()
               }
             >
               {value}
