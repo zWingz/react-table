@@ -3,9 +3,9 @@ import { shallow } from 'enzyme'
 import {Table, BaseTable} from '..'
 import { default as dataSource } from './DataSource'
 import { ColumnProps, TableProp } from '../module'
+type TestDataType = ColumnProps<typeof dataSource[0]>[]
 
-describe('test table', () => {
-  type TestDataType = ColumnProps<typeof dataSource[0]>[]
+;describe('test table', () => {
   const columns: TestDataType = [{
     title: 'id',
     dataIndex: 'id'
@@ -32,5 +32,35 @@ describe('test table', () => {
     expect(ins.fixedLeft).toBeFalsy()
     expect(ins.fixedRight).toBeFalsy()
     expect(ins.cacheColumns).toEqual(columns)
+  })
+})
+
+describe('test fixed render', () => {
+  const columns: TestDataType = [{
+    title: 'id',
+    dataIndex: 'id',
+    fixed: 'left'
+  }, {
+    title: 'createTime',
+    dataIndex: 'createTime',
+    fixed: 'left'
+  }, {
+    title: <span>jsx title</span>,
+    dataIndex: 'name'
+  }, {
+    title: 'title',
+    dataIndex: 'title',
+    className: 'th-custom-class',
+    fixed: 'right'
+  }]
+  const wrapper = shallow<TableProp, any>(<Table dataSource={dataSource} columns={columns} rowKey='id'/>)
+  it('it should have three BaseTable', () => {
+    expect(wrapper.find(BaseTable)).toHaveLength(3)
+  })
+  it('fixed table should have right className', () => {
+    const left = wrapper.find(BaseTable).at(0)
+    const right = wrapper.find(BaseTable).at(2)
+    expect(left.props().className).toEqual('fixed-table_fixed fixed-table_fixed-left')
+    expect(right.props().className).toEqual('fixed-table_fixed fixed-table_fixed-right')
   })
 })
