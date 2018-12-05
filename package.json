@@ -116,7 +116,9 @@
     "testMatch": [
       "**/__test__/*.test.(ts|tsx)"
     ],
-    "snapshotSerializers": ["enzyme-to-json/serializer"]
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ]
   },
   "dependencies": {
     "classnames": "^2.2.6",

@@ -1,6 +1,7 @@
 import * as React from 'react'
-import { shallow, mount, ShallowWrapper, ReactWrapper } from 'enzyme'
+import { shallow, mount, ReactWrapper } from 'enzyme'
 import {Table, BaseTable } from '..'
+import Scrollbar from '../../HorizontalScrollBar'
 import { default as dataSource } from './fixtures/DataSource'
 import { ColumnProps, TableProp } from '../module'
 type TestDataType = ColumnProps<typeof dataSource[0]>[]
@@ -24,6 +25,7 @@ type TestDataType = ColumnProps<typeof dataSource[0]>[]
     const wrapper = shallow<TableProp, any>(<Table dataSource={dataSource} columns={columns} rowKey='id'/>)
     expect(wrapper).toMatchSnapshot()
     expect(wrapper.find(BaseTable)).toHaveLength(1)
+    expect(wrapper.find(Scrollbar)).toHaveLength(1)
     expect(wrapper.find('#fixed-table-magic')).toHaveLength(1)
     expect(wrapper.state().top).toEqual(0)
     expect(wrapper.state().paddingRight).toEqual(0)
