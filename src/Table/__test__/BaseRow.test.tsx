@@ -4,13 +4,13 @@ import { shallow } from 'enzyme'
 import BaseRow, { getChainObject } from '../BaseRow'
 import { ColumnProps } from '../module'
 
-const unwrapMemo = (
-  node: React.ReactElement<any>,
-  options?: Enzyme.ShallowRendererProps
-) => {
-  const Tag = (node.type as any).type
-  return shallow(<Tag {...node.props} />, options)
-}
+// const unwrapMemo = (
+//   node: React.ReactElement<any>,
+//   options?: Enzyme.ShallowRendererProps
+// ) => {
+//   const Tag = (node.type as any).type
+//   return shallow(<Tag {...node.props} />, options)
+// }
 describe('test getChainObject', () => {
   it('test chain path', () => {
     const obj = {
@@ -43,7 +43,7 @@ describe('test BaseRow', () => {
       dataIndex: 'id'
     }]
     it('test dataIndex', () => {
-      const wrapper = unwrapMemo(<BaseRow columns={baseColumns} record={record} rowIndex={0}/>)
+      const wrapper = shallow(<BaseRow columns={baseColumns} record={record} rowIndex={0}/>)
       expect(wrapper.find('td')).toHaveLength(1)
       expect(wrapper.find('td').text()).toEqual(record.id)
     })
@@ -53,7 +53,7 @@ describe('test BaseRow', () => {
         dataIndex: 'user.name'
       }]
       const indx = 0
-      const wrapper = unwrapMemo(<BaseRow columns={columns} record={record} rowIndex={indx}/>)
+      const wrapper = shallow(<BaseRow columns={columns} record={record} rowIndex={indx}/>)
       expect(wrapper.find('td')).toHaveLength(2)
       expect(wrapper.find('td').at(1).text()).toEqual(record.user.name)
     })
@@ -68,7 +68,7 @@ describe('test BaseRow', () => {
         key: 'row-key'
       }]
       const indx = 1
-      const wrapper = unwrapMemo(<BaseRow columns={columns} record={record} rowIndex={indx}/>)
+      const wrapper = shallow(<BaseRow columns={columns} record={record} rowIndex={indx}/>)
       expect(wrapper.find('td')).toHaveLength(2)
       expect(render).toBeCalledTimes(1)
       expect(render).toBeCalledWith(null, record, indx)
@@ -86,7 +86,7 @@ describe('test BaseRow', () => {
         render: () => 'test'
       }]
       const indx = 1
-      const wrapper = unwrapMemo(<BaseRow columns={columns} record={record} rowIndex={indx}/>)
+      const wrapper = shallow(<BaseRow columns={columns} record={record} rowIndex={indx}/>)
       expect(wrapper.find('td')).toHaveLength(3)
       expect(wrapper.find('td').at(0).key()).toEqual('id')
       expect(wrapper.find('td').at(1).key()).toEqual('row-key')
@@ -98,7 +98,7 @@ describe('test BaseRow', () => {
         dataIndex: 'id',
         align: 'right'
       }]
-      const wrapper = unwrapMemo(<BaseRow columns={columns} record={record} rowIndex={0}/>)
+      const wrapper = shallow(<BaseRow columns={columns} record={record} rowIndex={0}/>)
       expect(wrapper.find('td').props().style.textAlign).toEqual('right')
     })
     it('test onRow return object', () => {
@@ -109,7 +109,7 @@ describe('test BaseRow', () => {
         onClick: click
       }
       onRow.mockReturnValue(onRowReturn)
-      const wrapper = unwrapMemo(<BaseRow onRow={onRow} columns={baseColumns} record={record} rowIndex={0}/>)
+      const wrapper = shallow(<BaseRow onRow={onRow} columns={baseColumns} record={record} rowIndex={0}/>)
       expect(onRow).toBeCalledTimes(1)
       const tr = wrapper.find('tr')
       expect(tr.props()).toMatchObject(onRowReturn)
@@ -119,7 +119,7 @@ describe('test BaseRow', () => {
     it('test onRow return Falsy', () => {
       const onRow = jest.fn()
       onRow.mockReturnValue(undefined)
-      const wrapper = unwrapMemo(<BaseRow onRow={onRow} columns={baseColumns} record={record} rowIndex={0}/>)
+      const wrapper = shallow(<BaseRow onRow={onRow} columns={baseColumns} record={record} rowIndex={0}/>)
       expect(onRow).toBeCalledTimes(1)
       const tr = wrapper.find('tr')
       expect(tr.props()).toMatchObject({

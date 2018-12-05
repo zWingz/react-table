@@ -36,7 +36,7 @@ exports[`test BaseTable render test snapshot render: baseTable snapshot 1`] = `
     </tr>
   </thead>
   <tbody>
-    <[object Object]
+    <TableRow
       columns={
         Array [
           Object {
@@ -71,7 +71,7 @@ exports[`test BaseTable render test snapshot render: baseTable snapshot 1`] = `
       }
       rowIndex={0}
     />
-    <[object Object]
+    <TableRow
       columns={
         Array [
           Object {
@@ -106,7 +106,7 @@ exports[`test BaseTable render test snapshot render: baseTable snapshot 1`] = `
       }
       rowIndex={1}
     />
-    <[object Object]
+    <TableRow
       columns={
         Array [
           Object {
@@ -141,7 +141,7 @@ exports[`test BaseTable render test snapshot render: baseTable snapshot 1`] = `
       }
       rowIndex={2}
     />
-    <[object Object]
+    <TableRow
       columns={
         Array [
           Object {

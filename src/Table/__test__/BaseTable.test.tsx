@@ -3,7 +3,7 @@ import { shallow } from 'enzyme'
 import BaseTable from '../BaseTable'
 import BaseRow from '../BaseRow'
 import { ColumnProps } from '../module'
-import {default as dataSource} from './DataSource'
+import {default as dataSource} from './fixtures/DataSource'
 
 // const dataSource = [
 //   {

@@ -81,6 +81,7 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
   }
 
   hoverClass(e, type) {
+    console.log(e.target.closest('tr'))
     const tr = e.target.closest('tr')
     if (!tr) {
       return

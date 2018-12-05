@@ -31,41 +31,49 @@ interface TableRowProp<T> {
   onRow?: (record: T) => RowProp
 }
 
-export default React.memo(function TableRow<T extends PlainObject = any>(props: TableRowProp<T>) {
-  const { record, onRow, columns, rowIndex } = props
-    const trProp: RowProp = {}
-    if (onRow) {
-      const onRowProp = onRow(record) || {}
-      Object.assign(trProp, onRowProp)
-    }
-    return (
-      <tr {...trProp}>
-        {columns.map((column, columnIdx) => {
-          let value = null
-          const { dataIndex, render, key } = column
-          if (dataIndex) {
-            if ((dataIndex as string).includes('.')) {
-              value = getChainObject(record, dataIndex as string)
-            } else {
-              value = record[dataIndex as string]
-            }
-          }
-          if (render) {
-            value = render(value, record, rowIndex)
-          }
-          return (
-            <td
-              style={{ textAlign: column.align }}
-              className={column.className}
-              key={
-                key || (dataIndex as string) || columnIdx.toString()
+// TODO: use React.memo instead of PureComponent when enzyme support
+
+export default class TableRow<T extends PlainObject = any> extends React.PureComponent<TableRowProp<T>> {
+  render() {
+    const { record, onRow, columns, rowIndex } = this.props
+      const trProp: RowProp = {}
+      if (onRow) {
+        const onRowProp = onRow(record) || {}
+        Object.assign(trProp, onRowProp)
+      }
+      return (
+        <tr {...trProp}>
+          {columns.map((column, columnIdx) => {
+            let value = null
+            const { dataIndex, render, key } = column
+            if (dataIndex) {
+              if ((dataIndex as string).includes('.')) {
+                value = getChainObject(record, dataIndex as string)
+              } else {
+                value = record[dataIndex as string]
               }
-            >
-              {value}
-            </td>
-          )
-        })}
-      </tr>
-    )
+            }
+            if (render) {
+              value = render(value, record, rowIndex)
+            }
+            return (
+              <td
+                style={{ textAlign: column.align }}
+                className={column.className}
+                key={
+                  key || (dataIndex as string) || columnIdx.toString()
+                }
+              >
+                {value}
+              </td>
+            )
+          })}
+        </tr>
+      )
+
+  }
 }
-)
+
+// export default React.memo(function TableRow<T extends PlainObject = any>(props: TableRowProp<T>) {
+// }
+// )

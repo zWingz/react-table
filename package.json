@@ -105,7 +105,8 @@
     ],
     "setupTestFrameworkScriptFile": "<rootDir>/test/setup.ts",
     "collectCoverageFrom": [
-      "src/**/*.{ts,tsx}"
+      "src/**/*.{ts,tsx}",
+      "!src/**/__test__/**"
     ],
     "coverageDirectory": "./coverage/",
     "collectCoverage": true,

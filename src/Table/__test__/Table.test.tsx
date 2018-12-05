@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { shallow } from 'enzyme'
-import {Table, BaseTable} from '..'
-import { default as dataSource } from './DataSource'
+import { shallow, mount } from 'enzyme'
+import {Table, BaseTable } from '..'
+import { default as dataSource } from './fixtures/DataSource'
 import { ColumnProps, TableProp } from '../module'
 type TestDataType = ColumnProps<typeof dataSource[0]>[]
 
@@ -62,5 +62,19 @@ describe('test fixed render', () => {
     const right = wrapper.find(BaseTable).at(2)
     expect(left.props().className).toEqual('fixed-table_fixed fixed-table_fixed-left')
     expect(right.props().className).toEqual('fixed-table_fixed fixed-table_fixed-right')
+  })
+  it('test hoverClass', () => {
+    const wrapper2 = mount(<Table dataSource={dataSource} columns={columns} rowKey='id'/>)
+    // const tables = wrapper2.find(BaseTable)
+    // const left = tables.at(0)
+    // const body = tables.at(1)
+    // const right = tables.at(2)
+    // const container = wrapper2.find('.fixed-table-container')
+    // const trIndex = 2
+    // const target = left.find('tbody tr').at(trIndex).getDOMNode()
+    // console.log(target)
+    // container.simulate('mouseover', {
+    //   target
+    // })
   })
 })
