@@ -1,36 +1,10 @@
 import * as React from 'react'
-import { shallow } from 'enzyme'
+import { shallow, mount } from 'enzyme'
 import BaseTable from '../BaseTable'
 import BaseRow from '../BaseRow'
 import { ColumnProps } from '../module'
 import {default as dataSource} from './fixtures/DataSource'
 
-// const dataSource = [
-//   {
-//     'id': '440000200106140115',
-//     'createTime': '1976-04-02',
-//     'name': '尹娟',
-//     'title': '目派与响清'
-//   },
-//   {
-//     'id': '130000199202167395',
-//     'createTime': '1978-12-17',
-//     'name': '程丽',
-//     'title': '无北共外'
-//   },
-//   {
-//     'id': '640000197411167747',
-//     'createTime': '2012-12-06',
-//     'name': '何桂英',
-//     'title': '周切程'
-//   },
-//   {
-//     'id': '440000197608270476',
-//     'createTime': '1990-07-18',
-//     'name': '黄杰',
-//     'title': '一和下'
-//   }
-// ]
 type TestDataType = ColumnProps<typeof dataSource[0]>[]
 const columns: TestDataType = [{
   title: 'id',
@@ -98,10 +72,12 @@ describe('test BaseTable props', () => {
 // test later
 // because enzyme not support React.memo
 
-// describe('test ref', () => {
-//   it('test ref', () => {
-//     const ref = jest.fn()
-//     const wrapper = mount(<BaseTable getRef={ref} columns={columns} dataSource={dataSource} rowKey='id'/>)
-//     expect(ref).toBeCalledTimes(1)
-//   })
-// })
+describe('test ref', () => {
+  it('test ref', () => {
+    const ref = jest.fn(val => val)
+    const wrapper = mount(<BaseTable getRef={ref} columns={columns} dataSource={dataSource} rowKey='id'/>)
+    expect(ref).toBeCalledTimes(1)
+    const table = wrapper.getDOMNode()
+    expect(ref.mock.calls[0][0]).toBe(table)
+  })
+})

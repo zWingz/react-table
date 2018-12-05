@@ -22,7 +22,6 @@ class BaseTable<T extends PlainObject = any> extends React.PureComponent<BaseTab
     top: PropTypes.number
   }
   static defaultProps = {
-    getRef: () => {},
     style: {},
     dataSource: [],
     columns: []
