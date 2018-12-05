@@ -253,6 +253,11 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
     )
     this.refreshScroll()
   }
+  componentDidUpdate(prevProps) {
+    if(prevProps.children !== this.props.children) {
+      this.refreshScroll()
+    }
+  }
   componentWillUnmount() {
     this._isMounted = false
     this.scroller.removeEventListener('scroll', this.onScrollHandle)
