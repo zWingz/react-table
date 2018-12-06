@@ -10,7 +10,7 @@ export interface HorizontalScrollBarProp {
 }
 
 interface HorizontalScrollBarStat {
-  width: number,
+  scrollWidth: number,
   left: number,
   percent: number, // 滚动按钮宽度占比
   x: number, // 鼠标按键x坐标
@@ -18,7 +18,9 @@ interface HorizontalScrollBarStat {
   scrollLeft: number,
   // opacity: number // 是否需要设置透明
 }
-
+function checkShow({bottom, percent}) {
+  return bottom > 5 && percent < 1
+}
 class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, HorizontalScrollBarStat> {
   static defaultProps = {
     offsetBottom: 5
@@ -53,7 +55,7 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
   }
 
   state: HorizontalScrollBarStat = {
-    width: 0,
+    scrollWidth: 0,
     left: 0,
     percent: 0, // 滚动按钮宽度占比
     x: 0, // 鼠标按键x坐标
@@ -78,16 +80,16 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
         return
       }
       const { current } = this.$target
-      const { width, scrollLeft } = this.state
-      const { scrollWidth, offsetWidth, clientWidth } = current
-      const nextWidth = scrollWidth - (offsetWidth || clientWidth)
-      if (scrollLeft > width || width === 0) {
+      const { scrollWidth, scrollLeft } = this.state
+      const { scrollWidth: currentScrollWidth, offsetWidth, clientWidth } = current
+      const nextWidth = currentScrollWidth - (offsetWidth || clientWidth)
+      if (scrollLeft > scrollWidth || scrollWidth === 0) {
         this.setScrollLeft(0)
       }
-      const nextPercent = offsetWidth / scrollWidth
+      const nextPercent = offsetWidth / currentScrollWidth
       this.setState({
-        width: nextWidth,
-        percent: nextPercent
+        scrollWidth: nextWidth,
+        percent: isNaN(nextPercent) ? 0 : nextPercent
       })
       this.onScrollHandle()
       this.targetScrollHandle()
@@ -99,7 +101,9 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
     this.$bar = React.createRef()
     this.$target = React.createRef()
   }
-
+  get showBar() {
+    return checkShow(this.state)
+  }
   /**
    * @function
    * 监听全局滚动, 用来将虚拟滚动条固定在底部
@@ -223,8 +227,12 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
    * 往右拉
    */
   up(speed) {
-    const { scrollLeft, width } = this.state
-    this.setScrollLeft(scrollLeft + speed > width ? width : scrollLeft + speed)
+    const { scrollLeft, scrollWidth } = this.state
+    const left = scrollLeft + speed
+    this.setScrollLeft(left > scrollWidth ? scrollWidth : left)
+  }
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    return this.showBar || checkShow(nextState)
   }
   componentDidMount() {
     this._isMounted = true
@@ -268,10 +276,10 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
   render() {
     const { bottom, percent } = this.state
     return (
-      <div className={classnames(this.props.className)} style={{overflow: 'hidden', position: 'relative'}}>
+      <div className={this.props.className} style={{overflow: 'hidden', position: 'relative'}}>
         <div
           ref={this.$target}
-          className={classnames('scroll-container')}
+          className='scroll-container'
         >
           {this.props.children}
           {bottom > 5 &&

@@ -1,5 +1,4 @@
 import * as React from 'react'
-import * as Enzyme from 'enzyme'
 import { shallow } from 'enzyme'
 import BaseRow, { getChainObject } from '../BaseRow'
 import { ColumnProps } from '../module'
