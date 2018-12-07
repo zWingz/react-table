@@ -10,18 +10,20 @@ export interface HorizontalScrollBarProp {
 }
 
 interface HorizontalScrollBarStat {
-  scrollWidth: number,
-  left: number,
-  percent: number, // 滚动按钮宽度占比
-  x: number, // 鼠标按键x坐标
-  bottom: number, // 底部
-  scrollLeft: number,
+  scrollWidth: number
+  percent: number // 滚动按钮宽度占比
+  x: number // 鼠标按键x坐标
+  bottom: number // 底部
+  scrollLeft: number
   // opacity: number // 是否需要设置透明
 }
-function checkShow({bottom, percent}) {
+function checkShow({ bottom, percent }) {
   return bottom > 5 && percent < 1
 }
-class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, HorizontalScrollBarStat> {
+class HorizontalScrollBar extends React.Component<
+  HorizontalScrollBarProp,
+  HorizontalScrollBarStat
+> {
   static defaultProps = {
     offsetBottom: 5
   }
@@ -31,7 +33,7 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
    */
   get innerScrollLeft() {
     const { percent, scrollLeft } = this.state
-    let barScroll = scrollLeft * this.state.percent
+    let barScroll = scrollLeft * percent
     if (Number.isNaN(barScroll)) {
       barScroll = 0
     }
@@ -56,7 +58,6 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
 
   state: HorizontalScrollBarStat = {
     scrollWidth: 0,
-    left: 0,
     percent: 0, // 滚动按钮宽度占比
     x: 0, // 鼠标按键x坐标
     bottom: 0, // 底部
@@ -74,28 +75,29 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
    * @function
    * 监听target的大小变化,重新计算虚拟滚动条的宽度.以及滚动占比
    */
-  refreshScroll = timerFnc(
-    () => {
-      if (!this._isMounted) {
-        return
-      }
-      const { current } = this.$target
-      const { scrollWidth, scrollLeft } = this.state
-      const { scrollWidth: currentScrollWidth, offsetWidth, clientWidth } = current
-      const nextWidth = currentScrollWidth - (offsetWidth || clientWidth)
-      if (scrollLeft > scrollWidth || scrollWidth === 0) {
-        this.setScrollLeft(0)
-      }
-      const nextPercent = offsetWidth / currentScrollWidth
-      this.setState({
-        scrollWidth: nextWidth,
-        percent: isNaN(nextPercent) ? 0 : nextPercent
-      })
-      this.onScrollHandle()
-      this.targetScrollHandle()
-    },
-    250
-  )
+  refreshScroll = timerFnc(() => {
+    if (!this._isMounted) {
+      return
+    }
+    const { current } = this.$target
+    const { scrollWidth, scrollLeft } = this.state
+    const {
+      scrollWidth: currentScrollWidth,
+      offsetWidth,
+      clientWidth
+    } = current
+    const nextWidth = currentScrollWidth - (offsetWidth || clientWidth)
+    if (scrollLeft > scrollWidth || scrollWidth === 0) {
+      this.setScrollLeft(0)
+    }
+    const nextPercent = offsetWidth / currentScrollWidth
+    this.setState({
+      scrollWidth: nextWidth,
+      percent: isNaN(nextPercent) ? 0 : nextPercent
+    })
+    this.onScrollHandle()
+    this.targetScrollHandle()
+  }, 250)
   constructor(props: HorizontalScrollBarProp) {
     super(props)
     this.$bar = React.createRef()
@@ -109,30 +111,30 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
    * 监听全局滚动, 用来将虚拟滚动条固定在底部
    */
   onScrollHandle = () => {
-      const { bottom } = this.$target.current.getBoundingClientRect()
-      let offset = 0
-      const { scroller } = this
-      if (scroller === window) {
-        offset = document.documentElement.clientHeight
-      } else {
-        const { top } = (scroller as HTMLElement).getBoundingClientRect()
-        const { clientHeight } = (scroller as HTMLElement)
-        offset = top + clientHeight
-      }
-      const result = Math.max(
-        bottom - offset,
-        0
-      )
-      this.setState({
-        bottom: result
-      })
+    if(!this._isMounted) {
+      return
     }
+    const { bottom } = this.$target.current.getBoundingClientRect()
+    let offset = 0
+    const { scroller } = this
+    if (scroller === window) {
+      offset = document.documentElement.clientHeight
+    } else {
+      const { top } = (scroller as HTMLElement).getBoundingClientRect()
+      const { clientHeight } = scroller as HTMLElement
+      offset = top + clientHeight
+    }
+    const result = Math.max(bottom - offset, 0)
+    this.setState({
+      bottom: result
+    })
+  }
   /**
    * @function
    * 目标滚动时候同步到虚拟滚动条位置
    */
   targetScrollHandle = () => {
-    if(!this._isMounted) {
+    if (!this._isMounted) {
       return
     }
     this.setScrollLeft(this.$target.current.scrollLeft)
@@ -162,7 +164,7 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
     if (event.button !== 0) {
       return
     }
-    this.setX(event.pageX)
+    this.setX(event.clientX)
     document.body.addEventListener(
       'mousemove',
       this.bodyMouseMoveHandle,
@@ -176,14 +178,14 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
    * 拖动事件
    */
   bodyMouseMoveHandle = event => {
-    const offsetX = event.pageX - this.state.x,
+    const offsetX = event.clientX - this.state.x,
       speed = offsetX / this.state.percent
     if (offsetX > 0) {
       this.up(speed)
     } else {
       this.down(-speed)
     }
-    this.setX(event.pageX)
+    this.setX(event.clientX)
   }
   /**
    * @event
@@ -237,7 +239,7 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
   componentDidMount() {
     this._isMounted = true
     const { scrollTarget } = this.props
-    if(!scrollTarget) {
+    if (!scrollTarget) {
       this.scroller = window
     } else {
       if (typeof scrollTarget === 'string') {
@@ -262,7 +264,8 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
     this.refreshScroll()
   }
   componentDidUpdate(prevProps) {
-    if(prevProps.children !== this.props.children) {
+    // console.log('did updat');
+    if (prevProps.children !== this.props.children) {
       this.refreshScroll()
     }
   }
@@ -276,27 +279,26 @@ class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, Horiz
   render() {
     const { bottom, percent } = this.state
     return (
-      <div className={this.props.className} style={{overflow: 'hidden', position: 'relative'}}>
-        <div
-          ref={this.$target}
-          className='scroll-container'
-        >
+      <div
+        className={this.props.className}
+        style={{ overflow: 'hidden', position: 'relative' }}
+      >
+        <div ref={this.$target} className='scroll-container'>
           {this.props.children}
-          {bottom > 5 &&
-            percent < 1 && (
+          {bottom > 5 && percent < 1 && (
+            <div
+              className='virtual-scroll overhidden'
+              style={this.outerStyle}
+              onMouseDown={this.barOuterMouseDownHandle}
+            >
               <div
-                className='virtual-scroll overhidden'
-                style={this.outerStyle}
-                onMouseDown={this.barOuterMouseDownHandle}
-              >
-                <div
-                  ref={this.$bar}
-                  className='virtual-scroll-bar'
-                  style={this.innerScrollLeft}
-                  onMouseDown={this.barInnerMouseDownHandle}
-                />
-              </div>
-            )}
+                ref={this.$bar}
+                className='virtual-scroll-bar'
+                style={this.innerScrollLeft}
+                onMouseDown={this.barInnerMouseDownHandle}
+              />
+            </div>
+          )}
         </div>
       </div>
     )

@@ -61,8 +61,8 @@ jobs:
           key: yarn-packages-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
-      # - *Test
-      # - *Codecov
+      - *Test
+      - *Codecov
       - run: git checkout .
       - run: git checkout gh-pages #
       - run: git reset --hard origin/master # 同上
@@ -70,32 +70,32 @@ jobs:
       - *SetupGithub
       - *Push-gh-pages
 
-  # dev:
-  #   <<: *container
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         name: Restore Yarn Package Cache
-  #         keys:
-  #           - yarn-packages-{{ checksum "yarn.lock" }}
-  #     - *Install
-  #     - save_cache:
-  #         name: Save Yarn Package Cache
-  #         key: yarn-packages-{{ checksum "yarn.lock" }}
-  #         paths:
-  #           - ~/.cache/yarn
-  #     - *Test
+  dev:
+    <<: *container
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}
+      - *Install
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+      - *Test
 
 workflows:
   version: 2
-  # dev:
-  #   jobs:
-  #     - dev:
-  #         filters:
-  #           branches:
-  #             ignore:
-  #               - master
-  #               - gh-pages
+  dev:
+    jobs:
+      - dev:
+          filters:
+            branches:
+              ignore:
+                - master
+                - gh-pages
   master:
     jobs:
       - master:
