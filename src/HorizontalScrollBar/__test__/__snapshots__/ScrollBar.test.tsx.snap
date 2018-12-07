@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test scrollbar test snapshots: scroll bar snapshot 1`] = `
+<HorizontalScrollBar
+  offsetBottom={10}
+>
+  <div
+    style={
+      Object {
+        "overflow": "hidden",
+        "position": "relative",
+      }
+    }
+  >
+    <div
+      className="scroll-container"
+    >
+      <div>
+        children
+      </div>
+    </div>
+  </div>
+</HorizontalScrollBar>
+`;

@@ -1,0 +1,214 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test BaseTable render test snapshot render: baseTable snapshot 1`] = `
+<table
+  className="fixed-table"
+  style={Object {}}
+>
+  <thead
+    className=""
+    style={Object {}}
+  >
+    <tr>
+      <th
+        key="0"
+      >
+        id
+      </th>
+      <th
+        key="1"
+      >
+        createTime
+      </th>
+      <th
+        key="2"
+      >
+        <span>
+          jsx title
+        </span>
+      </th>
+      <th
+        className="th-custom-class"
+        key="3"
+      >
+        title
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <TableRow
+      columns={
+        Array [
+          Object {
+            "dataIndex": "id",
+            "title": "id",
+          },
+          Object {
+            "dataIndex": "createTime",
+            "title": "createTime",
+          },
+          Object {
+            "dataIndex": "name",
+            "title": <span>
+              jsx title
+            </span>,
+          },
+          Object {
+            "className": "th-custom-class",
+            "dataIndex": "title",
+            "title": "title",
+          },
+        ]
+      }
+      key="440000200106140115"
+      record={
+        Object {
+          "createTime": "1976-04-02",
+          "id": "440000200106140115",
+          "name": "尹娟",
+          "title": "目派与响清",
+        }
+      }
+      rowIndex={0}
+    />
+    <TableRow
+      columns={
+        Array [
+          Object {
+            "dataIndex": "id",
+            "title": "id",
+          },
+          Object {
+            "dataIndex": "createTime",
+            "title": "createTime",
+          },
+          Object {
+            "dataIndex": "name",
+            "title": <span>
+              jsx title
+            </span>,
+          },
+          Object {
+            "className": "th-custom-class",
+            "dataIndex": "title",
+            "title": "title",
+          },
+        ]
+      }
+      key="130000199202167395"
+      record={
+        Object {
+          "createTime": "1978-12-17",
+          "id": "130000199202167395",
+          "name": "程丽",
+          "title": "无北共外",
+        }
+      }
+      rowIndex={1}
+    />
+    <TableRow
+      columns={
+        Array [
+          Object {
+            "dataIndex": "id",
+            "title": "id",
+          },
+          Object {
+            "dataIndex": "createTime",
+            "title": "createTime",
+          },
+          Object {
+            "dataIndex": "name",
+            "title": <span>
+              jsx title
+            </span>,
+          },
+          Object {
+            "className": "th-custom-class",
+            "dataIndex": "title",
+            "title": "title",
+          },
+        ]
+      }
+      key="640000197411167747"
+      record={
+        Object {
+          "createTime": "2012-12-06",
+          "id": "640000197411167747",
+          "name": "何桂英",
+          "title": "周切程",
+        }
+      }
+      rowIndex={2}
+    />
+    <TableRow
+      columns={
+        Array [
+          Object {
+            "dataIndex": "id",
+            "title": "id",
+          },
+          Object {
+            "dataIndex": "createTime",
+            "title": "createTime",
+          },
+          Object {
+            "dataIndex": "name",
+            "title": <span>
+              jsx title
+            </span>,
+          },
+          Object {
+            "className": "th-custom-class",
+            "dataIndex": "title",
+            "title": "title",
+          },
+        ]
+      }
+      key="440000197608270476"
+      record={
+        Object {
+          "createTime": "1990-07-18",
+          "id": "440000197608270476",
+          "name": "黄杰",
+          "title": "一和下",
+        }
+      }
+      rowIndex={3}
+    />
+  </tbody>
+</table>
+`;
+
+exports[`test BaseTable render test thead render: thead snapshot 1`] = `
+<thead
+  className=""
+  style={Object {}}
+>
+  <tr>
+    <th
+      key="0"
+    >
+      id
+    </th>
+    <th
+      key="1"
+    >
+      createTime
+    </th>
+    <th
+      key="2"
+    >
+      <span>
+        jsx title
+      </span>
+    </th>
+    <th
+      className="th-custom-class"
+      key="3"
+    >
+      title
+    </th>
+  </tr>
+</thead>
+`;

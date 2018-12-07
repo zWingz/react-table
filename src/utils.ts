@@ -8,10 +8,7 @@
  * @param {Function} beforeHook 每次执行之前的钩子
  * @returns
  */
-export function timerFnc(
-  fnc: Function,
-  t: number
-): (arg?: any) => void {
+export function timerFnc(fnc: Function, t: number): (arg?: any) => void {
   let timer = null
   const time: number = t || 200
   return function call(arg: any) {
@@ -25,14 +22,24 @@ export function timerFnc(
   }
 }
 
-export function addResizeEventListener(ele: HTMLElement, resizeHandle: () => void) {
+export function addResizeEventListener(
+  ele: HTMLElement,
+  resizeHandle: () => void
+) {
   const obj = document.createElement('object')
-  obj.setAttribute('style', 'position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden;opacity: 0; pointer-events: none; z-index: -1;')
+  obj.setAttribute(
+    'style',
+    'position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden;opacity: 0; pointer-events: none; z-index: -1;'
+  )
   obj.onload = () => {
-      obj.contentDocument.defaultView.addEventListener('resize', resizeHandle, false)
+    obj.contentDocument.defaultView.addEventListener(
+      'resize',
+      resizeHandle,
+      false
+    )
   }
   obj.type = 'text/html'
-  ele.appendChild(obj)
+  ele.append(obj)
   obj.data = 'about:blank'
   return obj
 }

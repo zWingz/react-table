@@ -1,6 +1,6 @@
-import React from 'react'
+import * as React from 'react'
+import * as PropTypes from 'prop-types'
 import classnames from 'classnames'
-import PropTypes from 'prop-types'
 import { ColumnProps, TableRowProp, PlainObject } from './module'
 import BaseRow from './BaseRow'
 interface BaseTableProp<T extends PlainObject = any> {
@@ -22,7 +22,6 @@ class BaseTable<T extends PlainObject = any> extends React.PureComponent<BaseTab
     top: PropTypes.number
   }
   static defaultProps = {
-    getRef: () => {},
     style: {},
     dataSource: [],
     columns: []
@@ -70,7 +69,7 @@ class BaseTable<T extends PlainObject = any> extends React.PureComponent<BaseTab
 
   render() {
     return (
-        <table ref={el => this.props.getRef(el)} className={classnames('fixed-table', this.props.className)} style={this.props.style}>
+        <table ref={this.props.getRef} className={classnames('fixed-table', this.props.className)} style={this.props.style}>
           {this.renderThead()}
           {this.renderTbody()}
         </table>
