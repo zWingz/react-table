@@ -5,7 +5,7 @@ type PlainObject = {
 export interface ColumnProps<T extends PlainObject = any> {
   title?: React.ReactNode
   key?: React.Key
-  dataIndex?: keyof T
+  dataIndex?: keyof T | string
   render?: (text: any, record: T, index: number) => React.ReactNode
   align?: 'left' | 'right' | 'center'
   className?: string
@@ -33,7 +33,6 @@ export interface HorizontalScrollBarProp {
 }
 interface HorizontalScrollBarStat {
   width: number,
-  left: number,
   percent: number, // 滚动按钮宽度占比
   x: number, // 鼠标按键x坐标
   bottom: number, // 底部

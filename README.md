@@ -1,5 +1,5 @@
 # React Fixed Table
-[![CircleCI](https://circleci.com/gh/zWingz/react-table/tree/master.svg?style=svg)](https://circleci.com/gh/zWingz/react-table/tree/master)
+[![CircleCI](https://circleci.com/gh/zWingz/react-table/tree/master.svg?style=svg)](https://circleci.com/gh/zWingz/react-table/tree/master) [![codecov](https://codecov.io/gh/zWingz/react-table/branch/master/graph/badge.svg)](https://codecov.io/gh/zWingz/react-table)
 
 [![Edit n3ml9m0zz4](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/n3ml9m0zz4)
 
