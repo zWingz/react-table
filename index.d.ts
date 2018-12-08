@@ -45,7 +45,7 @@ export interface BaseTableProp<T extends PlainObject = any> {
   dataSource?: T[];
   rowKey?: string;
   top?: string | number;
-  getRef?: (ref: any) => void;
+  getRef?: React.Ref<HTMLTableElement>;
   className?: string;
   style?: React.CSSProperties;
   onRow?: (record: T) => TableRowProp;
