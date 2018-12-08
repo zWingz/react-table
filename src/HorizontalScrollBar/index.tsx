@@ -234,7 +234,7 @@ class HorizontalScrollBar extends React.Component<
     this.setScrollLeft(left > scrollWidth ? scrollWidth : left)
   }
   shouldComponentUpdate(nextProps, nextState, nextContext) {
-    return this.showBar || checkShow(nextState)
+    return this.showBar || checkShow(nextState) || this.props !== nextProps
   }
   componentDidMount() {
     this._isMounted = true

@@ -63,7 +63,11 @@ exports[`test table base render 1`] = `
             },
           ]
         }
-        getRef={[Function]}
+        getRef={
+          Object {
+            "current": null,
+          }
+        }
         rowKey="id"
         style={
           Object {

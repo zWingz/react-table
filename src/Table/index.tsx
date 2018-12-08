@@ -27,9 +27,9 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
     paddingRight: 0,
     paddingLeft: 0
   }
-  $tbody: HTMLTableElement = null
-  $right: HTMLTableElement = null
-  $left: HTMLTableElement = null
+  $tbody: RefObject<HTMLTableElement> = null
+  $right: RefObject<HTMLTableElement> = null
+  $left: RefObject<HTMLTableElement> = null
   content: RefObject<HTMLDivElement> = null
   fixedLeft = false
   fixedRight = false
@@ -39,6 +39,9 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
   constructor(props) {
     super(props)
     this.content = React.createRef()
+    this.$left = React.createRef()
+    this.$tbody = React.createRef()
+    this.$right = React.createRef()
   }
 
   get formatData(): {[k in 'left' | 'right' | 'body']: ColumnProps<T>[]} {
@@ -104,12 +107,12 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
   }
 
   scrollHandle = () => {
-    const { $tbody } = this
-    if (!$tbody) {
+    const { current } = this.$tbody
+    if (!current) {
       return
     }
     // this.setScrollIng()
-    const { top } = $tbody.getBoundingClientRect()
+    const { top } = current.getBoundingClientRect()
     this.setState({
       top: top < 0 ? -top : 0
     })
@@ -129,10 +132,11 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
   }
 
   setRightPadding() {
-    if (!this.$right) {
+    const { current } = this.$right
+    if (!current) {
       return
     }
-    const { offsetWidth } = this.$right
+    const { offsetWidth } = current
     if (offsetWidth !== this.state.paddingRight) {
       this.setState({
         paddingRight: offsetWidth
@@ -140,10 +144,11 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
     }
   }
   setLeftPadding() {
-    if (!this.$left) {
+    const { current } = this.$left
+    if (!current) {
       return
     }
-    const { offsetWidth } = this.$left
+    const { offsetWidth } = current
     if (offsetWidth !== this.state.paddingLeft) {
       this.setState({
         paddingLeft: offsetWidth
@@ -187,9 +192,7 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
         >
           {this.fixedLeft && (
             <BaseTable<T>
-              getRef={el => {
-                this.$left = el
-              }}
+              getRef={this.$left}
               className='fixed-table_fixed fixed-table_fixed-left'
               columns={left}
               {...commonProp}
@@ -198,18 +201,14 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
           <ScrollBar className='flex-grow' offsetBottom={scrollBarOffset}>
             <BaseTable<T>
               style={this.tableContentStyle}
-              getRef={el => {
-                this.$tbody = el
-              }}
+              getRef={this.$tbody}
               columns={body}
               {...commonProp}
             />
           </ScrollBar>
           {this.fixedRight && (
             <BaseTable<T>
-              getRef={el => {
-                this.$right = el
-              }}
+              getRef={this.$right}
               className='fixed-table_fixed fixed-table_fixed-right'
               columns={right}
               {...commonProp}

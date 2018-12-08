@@ -72,11 +72,15 @@ describe('test fixed render', () => {
     const leftWidth = 101
     const rightWidth = 105
     ins.$left = {
-      offsetWidth: leftWidth
-    } as HTMLTableElement
+      current: {
+        offsetWidth: leftWidth
+      } as HTMLTableElement
+    }
     ins.$right = {
-      offsetWidth: rightWidth
-    } as HTMLTableElement
+      current: {
+        offsetWidth: rightWidth
+      } as HTMLTableElement
+    }
     ins.setPadding()
     const style = {
       paddingLeft: leftWidth + 'px',
@@ -141,12 +145,14 @@ describe('test scroll top', () => {
     const $tbody = ins.$tbody
     const top = 105
     ins.$tbody = {
-      getBoundingClientRect() {
-        return {
-          top: -top
-        } as ClientRect
-      }
-    } as HTMLTableElement
+      current: {
+        getBoundingClientRect() {
+          return {
+            top: -top
+          } as ClientRect
+        }
+      } as HTMLTableElement
+    }
     const event = new Event('scroll')
     window.dispatchEvent(event)
     cacheData = ins.cacheData
