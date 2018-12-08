@@ -55,7 +55,7 @@ interface TableProp<T> {
 interface ColumnProps<T> {
   title?: React.ReactNode
   key?: React.Key
-  dataIndex?: keyof T
+  dataIndex?: keyof T | string
   render?: (text: any, record: T, index: number) => React.ReactNode
   align?: 'left' | 'right' | 'center'
   className?: string
