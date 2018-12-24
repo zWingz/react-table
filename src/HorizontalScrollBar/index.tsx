@@ -128,14 +128,14 @@ class HorizontalScrollBar extends React.Component<
     let offset = 0
     const { scroller } = this
     if (scroller === window) {
-      offset = document.documentElement.clientHeight
+      // offset = document.documentElement.clientHeight
+      offset = window.innerHeight
     } else {
       const { top } = (scroller as HTMLElement).getBoundingClientRect()
       const { clientHeight } = scroller as HTMLElement
       offset = top + clientHeight
     }
     const result = Math.max(bottom - offset, 0)
-    console.log(result, bottom, offset)
     this.setState(
       {
         bottom: result
@@ -291,7 +291,6 @@ class HorizontalScrollBar extends React.Component<
     this.iframe.remove()
   }
   render() {
-    console.log(this.showBar)
     return (
       <div
         className={this.props.className}
