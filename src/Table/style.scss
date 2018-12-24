@@ -20,6 +20,9 @@ $main-color: #6a82ec;
     line-height: 36px;
     white-space: nowrap;
     text-align: center;
+    &.fixed {
+      width: 1px;
+    }
   }
   tr {
     transition: background 0.1s ease;

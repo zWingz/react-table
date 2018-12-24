@@ -8,13 +8,14 @@
  * @param {Function} beforeHook 每次执行之前的钩子
  * @returns
  */
-export function timerFnc(fnc: Function, t: number): (arg?: any) => void {
+export function timerFnc(fnc: Function, t: number, beforeHook?: Function): (arg?: any) => void {
   let timer = null
   const time: number = t || 200
   return function call(arg: any) {
     if (timer) {
       window.clearTimeout(timer)
     }
+    beforeHook && beforeHook.call(this, arg)
     timer = window.setTimeout(async () => {
       await fnc.call(this, arg)
       timer = null

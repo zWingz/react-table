@@ -15,7 +15,7 @@ interface HorizontalScrollBarStat {
   x: number // 鼠标按键x坐标
   bottom: number // 底部
   scrollLeft: number
-  // opacity: number // 是否需要设置透明
+  opacity: number // 是否需要设置透明
 }
 function checkShow({ bottom, percent }) {
   return bottom > 5 && percent < 1
@@ -48,10 +48,11 @@ class HorizontalScrollBar extends React.Component<
    */
   get outerStyle() {
     const { offsetBottom } = this.props
-    const { bottom } = this.state
+    const { bottom, opacity } = this.state
     return {
       transform: `translate3d(0px, ${-bottom}px, 0px)`,
-      bottom: offsetBottom + 'px'
+      bottom: offsetBottom + 'px',
+      opacity
       // opacity: (bottom > 5 && percent < 1) ? 1 : 0
     }
   }
@@ -61,8 +62,8 @@ class HorizontalScrollBar extends React.Component<
     percent: 0, // 滚动按钮宽度占比
     x: 0, // 鼠标按键x坐标
     bottom: 0, // 底部
-    scrollLeft: 0
-    // opacity: 1 // 是否需要设置透明
+    scrollLeft: 0,
+    opacity: 1 // 是否需要设置透明
   }
   _isMounted = false
   iframe: HTMLObjectElement = null // iframe,用来监听resize
@@ -71,33 +72,42 @@ class HorizontalScrollBar extends React.Component<
   $bar: React.RefObject<HTMLDivElement> = null
   $target: React.RefObject<HTMLDivElement> = null
 
+  setOpacityShow = timerFnc(() => {
+    this.setOpacity(1)
+  }, 500)
   /**
    * @function
    * 监听target的大小变化,重新计算虚拟滚动条的宽度.以及滚动占比
    */
-  refreshScroll = timerFnc(() => {
-    if (!this._isMounted) {
-      return
+  refreshScroll = timerFnc(
+    () => {
+      if (!this._isMounted) {
+        return
+      }
+      const { current } = this.$target
+      const { scrollWidth, scrollLeft } = this.state
+      const {
+        scrollWidth: currentScrollWidth,
+        offsetWidth,
+        clientWidth
+      } = current
+      const nextWidth = currentScrollWidth - (offsetWidth || clientWidth)
+      if (scrollLeft > scrollWidth || scrollWidth === 0) {
+        this.setScrollLeft(0)
+      }
+      const nextPercent = offsetWidth / currentScrollWidth
+      this.setState({
+        scrollWidth: nextWidth,
+        percent: isNaN(nextPercent) ? 0 : nextPercent
+      })
+      this.onScrollHandle()
+      this.targetScrollHandle()
+    },
+    250,
+    opa => {
+      opa === true && this.setOpacity(0)
     }
-    const { current } = this.$target
-    const { scrollWidth, scrollLeft } = this.state
-    const {
-      scrollWidth: currentScrollWidth,
-      offsetWidth,
-      clientWidth
-    } = current
-    const nextWidth = currentScrollWidth - (offsetWidth || clientWidth)
-    if (scrollLeft > scrollWidth || scrollWidth === 0) {
-      this.setScrollLeft(0)
-    }
-    const nextPercent = offsetWidth / currentScrollWidth
-    this.setState({
-      scrollWidth: nextWidth,
-      percent: isNaN(nextPercent) ? 0 : nextPercent
-    })
-    this.onScrollHandle()
-    this.targetScrollHandle()
-  }, 250)
+  )
   constructor(props: HorizontalScrollBarProp) {
     super(props)
     this.$bar = React.createRef()
@@ -111,7 +121,7 @@ class HorizontalScrollBar extends React.Component<
    * 监听全局滚动, 用来将虚拟滚动条固定在底部
    */
   onScrollHandle = () => {
-    if(!this._isMounted) {
+    if (!this._isMounted) {
       return
     }
     const { bottom } = this.$target.current.getBoundingClientRect()
@@ -125,9 +135,13 @@ class HorizontalScrollBar extends React.Component<
       offset = top + clientHeight
     }
     const result = Math.max(bottom - offset, 0)
-    this.setState({
-      bottom: result
-    })
+    console.log(result, bottom, offset)
+    this.setState(
+      {
+        bottom: result
+      },
+      !this.state.opacity ? this.setOpacityShow : undefined
+    )
   }
   /**
    * @function
@@ -200,11 +214,11 @@ class HorizontalScrollBar extends React.Component<
     document.body.removeEventListener('mouseup', this.bodyMouseUpHandle, false)
     document.body.classList.remove('no-select')
   }
-  // setOpacity(val) {
-  //   this.setState({
-  //     opacity: val
-  //   })
-  // }
+  setOpacity(val) {
+    this.setState({
+      opacity: val
+    })
+  }
   setX(x) {
     this.setState({
       x
@@ -266,7 +280,7 @@ class HorizontalScrollBar extends React.Component<
   componentDidUpdate(prevProps) {
     // console.log('did updat');
     if (prevProps.children !== this.props.children) {
-      this.refreshScroll()
+      this.refreshScroll(true)
     }
   }
   componentWillUnmount() {
@@ -277,7 +291,7 @@ class HorizontalScrollBar extends React.Component<
     this.iframe.remove()
   }
   render() {
-    const { bottom, percent } = this.state
+    console.log(this.showBar)
     return (
       <div
         className={this.props.className}
@@ -285,7 +299,7 @@ class HorizontalScrollBar extends React.Component<
       >
         <div ref={this.$target} className='scroll-container'>
           {this.props.children}
-          {bottom > 5 && percent < 1 && (
+          {this.showBar && (
             <div
               className='virtual-scroll overhidden'
               style={this.outerStyle}

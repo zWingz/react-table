@@ -29,7 +29,7 @@ const App = hot(module)(() => {
   const dataSource = mock(mockData).list
   return (
     <div>
-      <div className='container' style={{ display: 'flex', flexWrap: 'wrap' }}>
+      <div className='container'>
         <Table columns={columns} dataSource={dataSource} rowKey='field1' />
       </div>
     </div>

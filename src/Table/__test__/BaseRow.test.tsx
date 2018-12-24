@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { shallow } from 'enzyme'
-import BaseRow, { getChainObject } from '../BaseRow'
+import BaseRow from '../BaseRow'
+import { getChainObject } from '../utils'
 import { ColumnProps } from '../module'
 
 // const unwrapMemo = (

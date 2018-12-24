@@ -32,7 +32,7 @@
   "homepage": "https://zwing.site/react-table/#/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zWingz/react-table.git"
+    "url": "https://github.com/zWingz/react-table.git"
   },
   "bugs": {
     "url": "https://github.com/zWingz/react-table/issues"

@@ -4,6 +4,7 @@ import * as PropTypes from 'prop-types'
 import { TableProp, PlainObject, ColumnProps } from './module'
 import BaseTable from './BaseTable'
 import ScrollBar from '../HorizontalScrollBar'
+import RowContext from './TableContext'
 import './style.scss'
 import classnames from 'classnames'
 
@@ -25,11 +26,12 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
   state = {
     top: 0,
     paddingRight: 0,
-    paddingLeft: 0
+    paddingLeft: 0,
+    rowsHeight: []
   }
   $tbody: RefObject<HTMLTableElement> = null
-  $right: RefObject<HTMLTableElement> = null
-  $left: RefObject<HTMLTableElement> = null
+  // $right: RefObject<HTMLTableElement> = null
+  // $left: RefObject<HTMLTableElement> = null
   content: RefObject<HTMLDivElement> = null
   fixedLeft = false
   fixedRight = false
@@ -39,9 +41,9 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
   constructor(props) {
     super(props)
     this.content = React.createRef()
-    this.$left = React.createRef()
     this.$tbody = React.createRef()
-    this.$right = React.createRef()
+    // this.$left = React.createRef()
+    // this.$right = React.createRef()
   }
 
   get formatData(): {[k in 'left' | 'right' | 'body']: ColumnProps<T>[]} {
@@ -51,12 +53,10 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
     }
     this.cacheColumns = columns
     const left = []
-    const body = []
     const right = []
     columns.forEach(each => {
       const { fixed } = each
-      if (!fixed) {
-        body.push(each)
+      if(!fixed) {
         return
       }
       if (fixed === 'right') {
@@ -69,19 +69,19 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
     this.fixedRight = !!right.length
     this.cacheData = {
       left,
-      body,
+      body: columns,
       right
     }
     return this.cacheData
   }
 
-  get tableContentStyle() {
-    const { paddingLeft, paddingRight } = this.state
-    return {
-      paddingLeft: paddingLeft + 'px',
-      paddingRight: paddingRight + 'px'
-    }
-  }
+  // get tableContentStyle() {
+  //   const { paddingLeft, paddingRight } = this.state
+  //   return {
+  //     paddingLeft: paddingLeft + 'px',
+  //     paddingRight: paddingRight + 'px'
+  //   }
+  // }
 
   hoverClass(e, type) {
     const tr = e.target.closest('tr')
@@ -131,56 +131,39 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
     window.removeEventListener('resize', this.scrollHandle)
   }
 
-  setRightPadding() {
-    const { current } = this.$right
-    if (!current) {
-      return
+  getHeight() {
+    if (!this.$tbody.current || !this.props.multiLine) {
+      return []
     }
-    const { offsetWidth } = current
-    if (offsetWidth !== this.state.paddingRight) {
-      this.setState({
-        paddingRight: offsetWidth
-      })
-    }
+    this.setState({
+      rowsHeight: Array.from(
+        this.$tbody.current.querySelectorAll('tbody tr')
+      ).map(each => (each as HTMLElement).offsetHeight)
+    })
   }
-  setLeftPadding() {
-    const { current } = this.$left
-    if (!current) {
-      return
-    }
-    const { offsetWidth } = current
-    if (offsetWidth !== this.state.paddingLeft) {
-      this.setState({
-        paddingLeft: offsetWidth
-      })
-    }
-  }
-
-  setPadding() {
-    this.setLeftPadding()
-    this.setRightPadding()
-  }
-
   componentDidMount() {
     this.addEffect()
-    this.setPadding()
+    this.getHeight()
   }
 
   componentDidUpdate(prevProp, prevState, snap) {
-    this.setPadding()
+    if (prevProp !== this.props) {
+      this.getHeight()
+    }
   }
 
   componentWillUnmount() {
     this.removeEffect()
   }
   render() {
-    const { dataSource, rowKey, className, scrollBarOffset, onRow } = this.props
+    const { dataSource, rowKey, className, scrollBarOffset, onRow, multiLine } = this.props
     const { left, body, right } = this.formatData
     const commonProp = {
       dataSource,
       top: this.state.top,
       rowKey,
-      onRow
+      onRow,
+      multiLine
     }
     return (
       <>
@@ -190,30 +173,32 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
           onMouseOver={this.onMouseOver}
           onMouseOut={this.onMouseOut}
         >
-          {this.fixedLeft && (
-            <BaseTable<T>
-              getRef={this.$left}
-              className='fixed-table_fixed fixed-table_fixed-left'
-              columns={left}
-              {...commonProp}
-            />
-          )}
           <ScrollBar className='flex-grow' offsetBottom={scrollBarOffset}>
             <BaseTable<T>
-              style={this.tableContentStyle}
+              // style={this.tableContentStyle}
               getRef={this.$tbody}
               columns={body}
               {...commonProp}
-            />
+              />
           </ScrollBar>
-          {this.fixedRight && (
-            <BaseTable<T>
-              getRef={this.$right}
-              className='fixed-table_fixed fixed-table_fixed-right'
-              columns={right}
-              {...commonProp}
-            />
-          )}
+          <RowContext.Provider value={this.state.rowsHeight}>
+            {this.fixedLeft && (
+              <BaseTable<T>
+                // getRef={this.$left}
+                className='fixed-table_fixed fixed-table_fixed-left'
+                columns={left}
+                {...commonProp}
+              />
+            )}
+            {this.fixedRight && (
+              <BaseTable<T>
+                // getRef={this.$right}
+                className='fixed-table_fixed fixed-table_fixed-right'
+                columns={right}
+                {...commonProp}
+              />
+            )}
+          </RowContext.Provider>
         </div>
         {
           // it is a magic code

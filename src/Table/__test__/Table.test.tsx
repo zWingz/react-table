@@ -65,32 +65,7 @@ describe('test fixed render', () => {
     expect(left.props().className).toEqual('fixed-table_fixed fixed-table_fixed-left')
     expect(right.props().className).toEqual('fixed-table_fixed fixed-table_fixed-right')
   })
-  it('body table should setPadding', () => {
-    const ins = wrapper.instance() as Table
-    const $left = ins.$left
-    const $right = ins.$right
-    const leftWidth = 101
-    const rightWidth = 105
-    ins.$left = {
-      current: {
-        offsetWidth: leftWidth
-      } as HTMLTableElement
-    }
-    ins.$right = {
-      current: {
-        offsetWidth: rightWidth
-      } as HTMLTableElement
-    }
-    ins.setPadding()
-    const style = {
-      paddingLeft: leftWidth + 'px',
-      paddingRight: rightWidth + 'px'
-    }
-    expect(ins.tableContentStyle).toEqual(style)
-    expect(wrapper.find(BaseTable).at(1).props().style).toEqual(style)
-    ins.$left = $left
-    ins.$right = $right
-  })
+
   it('test hoverClass', () => {
     const mountWrapper = mount(<Table dataSource={dataSource} columns={columns} rowKey='id'/>)
     const tables = mountWrapper.find(BaseTable)
