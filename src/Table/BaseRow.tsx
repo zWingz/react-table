@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { HTMLAttributes } from 'react'
 import { PlainObject, ColumnProps } from './module'
-import { getChainObject } from './utils'
+import { getChainObject } from '../utils'
 import classnames from 'classnames'
 import Context from './TableContext'
 

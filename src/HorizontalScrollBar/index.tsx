@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { timerFnc, addResizeEventListener } from '../utils'
-import classnames from 'classnames'
 import './style.scss'
 export interface HorizontalScrollBarProp {
   // scrollTarget: React.ReactNode
@@ -24,9 +23,6 @@ class HorizontalScrollBar extends React.Component<
   HorizontalScrollBarProp,
   HorizontalScrollBarStat
 > {
-  static defaultProps = {
-    offsetBottom: 5
-  }
   /**
    * @function
    * 计算往左滚动距离
@@ -56,6 +52,12 @@ class HorizontalScrollBar extends React.Component<
       // opacity: (bottom > 5 && percent < 1) ? 1 : 0
     }
   }
+  get showBar() {
+    return checkShow(this.state)
+  }
+  static defaultProps = {
+    offsetBottom: 5
+  }
 
   state: HorizontalScrollBarStat = {
     scrollWidth: 0,
@@ -66,6 +68,7 @@ class HorizontalScrollBar extends React.Component<
     opacity: 1 // 是否需要设置透明
   }
   _isMounted = false
+  scrolling: boolean = false
   iframe: HTMLObjectElement = null // iframe,用来监听resize
   // observer = {}
   scroller: HTMLElement | Window = null
@@ -74,7 +77,7 @@ class HorizontalScrollBar extends React.Component<
 
   setOpacityShow = timerFnc(() => {
     this.setOpacity(1)
-  }, 500)
+  }, 0)
   /**
    * @function
    * 监听target的大小变化,重新计算虚拟滚动条的宽度.以及滚动占比
@@ -108,13 +111,13 @@ class HorizontalScrollBar extends React.Component<
       opa === true && this.setOpacity(0)
     }
   )
+  onScrollEnd = timerFnc(() => {
+    this.scrolling = false
+  }, 0)
   constructor(props: HorizontalScrollBarProp) {
     super(props)
     this.$bar = React.createRef()
     this.$target = React.createRef()
-  }
-  get showBar() {
-    return checkShow(this.state)
   }
   /**
    * @function
@@ -124,6 +127,7 @@ class HorizontalScrollBar extends React.Component<
     if (!this._isMounted) {
       return
     }
+    this.scrolling = true
     const { bottom } = this.$target.current.getBoundingClientRect()
     let offset = 0
     const { scroller } = this
@@ -142,6 +146,7 @@ class HorizontalScrollBar extends React.Component<
       },
       !this.state.opacity ? this.setOpacityShow : undefined
     )
+    this.onScrollEnd()
   }
   /**
    * @function
@@ -236,7 +241,8 @@ class HorizontalScrollBar extends React.Component<
    */
   down(speed) {
     const { scrollLeft } = this.state
-    this.setScrollLeft(scrollLeft - speed > 0 ? scrollLeft - speed : 0)
+    const offset = scrollLeft - speed
+    this.setScrollLeft(offset > 0 ? offset : 0)
   }
   /**
    * @function
@@ -278,8 +284,7 @@ class HorizontalScrollBar extends React.Component<
     this.refreshScroll()
   }
   componentDidUpdate(prevProps) {
-    // console.log('did updat');
-    if (prevProps.children !== this.props.children) {
+    if (prevProps.children !== this.props.children && !this.scrolling) {
       this.refreshScroll(true)
     }
   }

@@ -25,8 +25,6 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
 
   state = {
     top: 0,
-    paddingRight: 0,
-    paddingLeft: 0,
     rowsHeight: []
   }
   $tbody: RefObject<HTMLTableElement> = null

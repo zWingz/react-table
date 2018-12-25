@@ -28,9 +28,7 @@ type TestDataType = ColumnProps<typeof dataSource[0]>[]
     expect(wrapper.find(Scrollbar)).toHaveLength(1)
     expect(wrapper.find('#fixed-table-magic')).toHaveLength(1)
     expect(wrapper.state().top).toEqual(0)
-    expect(wrapper.state().paddingRight).toEqual(0)
-    expect(wrapper.state().paddingLeft).toEqual(0)
-    const ins = wrapper.instance() as any
+    const ins = wrapper.instance() as Table
     expect(ins.fixedLeft).toBeFalsy()
     expect(ins.fixedRight).toBeFalsy()
     expect(ins.cacheColumns).toEqual(columns)
@@ -60,7 +58,7 @@ describe('test fixed render', () => {
     expect(wrapper.find(BaseTable)).toHaveLength(3)
   })
   it('fixed table should have right className', () => {
-    const left = wrapper.find(BaseTable).at(0)
+    const left = wrapper.find(BaseTable).at(1)
     const right = wrapper.find(BaseTable).at(2)
     expect(left.props().className).toEqual('fixed-table_fixed fixed-table_fixed-left')
     expect(right.props().className).toEqual('fixed-table_fixed fixed-table_fixed-right')
@@ -69,8 +67,8 @@ describe('test fixed render', () => {
   it('test hoverClass', () => {
     const mountWrapper = mount(<Table dataSource={dataSource} columns={columns} rowKey='id'/>)
     const tables = mountWrapper.find(BaseTable)
-    const left = tables.at(0)
-    const body = tables.at(1)
+    const body = tables.at(0)
+    const left = tables.at(1)
     const right = tables.at(2)
     const container = mountWrapper.find('.fixed-table-container')
     const trIndex = 2

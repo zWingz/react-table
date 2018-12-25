@@ -69,15 +69,13 @@ exports[`test table base render 1`] = `
           }
         }
         rowKey="id"
-        style={
-          Object {
-            "paddingLeft": "0px",
-            "paddingRight": "0px",
-          }
-        }
+        style={Object {}}
         top={0}
       />
     </HorizontalScrollBar>
+    <ContextProvider
+      value={Array []}
+    />
   </div>
   <div
     id="fixed-table-magic"

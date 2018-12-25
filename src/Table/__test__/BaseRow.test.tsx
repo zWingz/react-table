@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { shallow } from 'enzyme'
 import BaseRow from '../BaseRow'
-import { getChainObject } from '../utils'
 import { ColumnProps } from '../module'
 
 // const unwrapMemo = (
@@ -11,22 +10,6 @@ import { ColumnProps } from '../module'
 //   const Tag = (node.type as any).type
 //   return shallow(<Tag {...node.props} />, options)
 // }
-describe('test getChainObject', () => {
-  it('test chain path', () => {
-    const obj = {
-      a: {
-        b: {
-          c: 1
-        }
-      },
-      d: 1
-    }
-    expect(getChainObject(obj, 'd')).toEqual(1)
-    expect(getChainObject(obj, 'a.b')).toEqual({c: 1})
-    expect(getChainObject(obj, 'a.b.c')).toEqual(1)
-    expect(getChainObject(obj, 'a.c.c')).toEqual(undefined)
-  })
-})
 
 describe('test BaseRow', () => {
   describe('test render', () => {

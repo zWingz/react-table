@@ -24,6 +24,15 @@ $main-color: #6a82ec;
       width: 1px;
     }
   }
+  &.multiLine {
+    td {
+      // white-space: normal;
+      vertical-align: top;
+      box-sizing: border-box;
+      line-height: initial;
+      padding: 6px 10px;
+    }
+  }
   tr {
     transition: background 0.1s ease;
   }

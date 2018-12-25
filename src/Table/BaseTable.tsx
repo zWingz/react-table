@@ -3,7 +3,7 @@ import * as PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { ColumnProps, TableRowProp, PlainObject } from './module'
 import BaseRow from './BaseRow'
-import { getChainObject } from './utils'
+import { getChainObject } from '../utils'
 interface BaseTableProp<T extends PlainObject = any> {
   columns?: ColumnProps<T>[]
   dataSource?: T[]
