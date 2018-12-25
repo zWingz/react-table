@@ -1,3 +1,5 @@
+import { PlainObject } from './Table/module'
+
 /**
  * 节流函数
  * 规定时间内如果触发多次,则取消上一次请求,重新setTimeout
@@ -8,13 +10,14 @@
  * @param {Function} beforeHook 每次执行之前的钩子
  * @returns
  */
-export function timerFnc(fnc: Function, t: number): (arg?: any) => void {
+export function timerFnc(fnc: Function, t: number, beforeHook?: Function): (arg?: any) => void {
   let timer = null
   const time: number = t || 200
   return function call(arg: any) {
     if (timer) {
       window.clearTimeout(timer)
     }
+    beforeHook && beforeHook.call(this, arg)
     timer = window.setTimeout(async () => {
       await fnc.call(this, arg)
       timer = null
@@ -42,4 +45,24 @@ export function addResizeEventListener(
   ele.append(obj)
   obj.data = 'about:blank'
   return obj
+}
+
+export function getChainObject(obj: PlainObject, path: string) {
+  const keys = path.split('.')
+  if(keys.length === 1) {
+    return obj[path]
+  }
+  const len = keys.length
+  let tra = obj
+  for (let i = 0; i < len; i++) {
+    const key = keys[i]
+    const tmp = tra[key]
+    if (i === len - 1) {
+      return tmp
+    }
+    if (tmp === undefined) {
+      return undefined
+    }
+    tra = tmp
+  }
 }

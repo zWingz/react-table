@@ -3,6 +3,7 @@ import * as PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { ColumnProps, TableRowProp, PlainObject } from './module'
 import BaseRow from './BaseRow'
+import { getChainObject } from '../utils'
 interface BaseTableProp<T extends PlainObject = any> {
   columns?: ColumnProps<T>[]
   dataSource?: T[]
@@ -10,6 +11,7 @@ interface BaseTableProp<T extends PlainObject = any> {
   top?: string | number,
   getRef?: React.Ref<HTMLTableElement>,
   className?: string
+  multiLine?: boolean
   style?: React.CSSProperties,
   onRow?: (record: T) => TableRowProp
 }
@@ -54,7 +56,12 @@ class BaseTable<T extends PlainObject = any> extends React.PureComponent<BaseTab
     return (
       <tbody>
         {dataSource.map((record, idx) => {
-          const key = record[rowKey] + ''
+          let key = ''
+          if((rowKey as string).includes('.')) {
+            key = getChainObject(record, (rowKey as string))
+          } else {
+            key = record[rowKey] + ''
+          }
           return <BaseRow
             key={key}
             record={record}
@@ -68,8 +75,9 @@ class BaseTable<T extends PlainObject = any> extends React.PureComponent<BaseTab
   }
 
   render() {
+    const { className, multiLine, style, getRef } = this.props
     return (
-        <table ref={this.props.getRef} className={classnames('fixed-table', this.props.className)} style={this.props.style}>
+        <table ref={getRef} className={classnames('fixed-table', className, { 'table-multiLine': multiLine })} style={style}>
           {this.renderThead()}
           {this.renderTbody()}
         </table>

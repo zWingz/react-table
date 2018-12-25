@@ -7,7 +7,7 @@ import {
   BaseTable as IndexBaseTable,
   HorizontalScrollBar as IndexHorizontalScrollBar
 } from '..'
-import { timerFnc, addResizeEventListener } from '../utils'
+import { timerFnc, addResizeEventListener, getChainObject } from '../utils'
 describe('test export', () => {
   it('test Table export', () => {
     expect(Table).toBe(IndexTable)
@@ -47,5 +47,22 @@ describe('test addResizeEventListener', () => {
   it('append an object as children', () => {
     obj = addResizeEventListener(div, fn)
     expect(div.lastChild).toBe(obj)
+  })
+})
+
+describe('test getChainObject', () => {
+  it('test chain path', () => {
+    const obj = {
+      a: {
+        b: {
+          c: 1
+        }
+      },
+      d: 1
+    }
+    expect(getChainObject(obj, 'd')).toEqual(1)
+    expect(getChainObject(obj, 'a.b')).toEqual({c: 1})
+    expect(getChainObject(obj, 'a.b.c')).toEqual(1)
+    expect(getChainObject(obj, 'a.c.c')).toEqual(undefined)
   })
 })

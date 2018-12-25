@@ -96,15 +96,52 @@ const columns = [{
 
 </Playground>
 
+
+### MultiLine
+
+<Playground>
+  {
+    () => {
+      const fieldKey = []
+      const fieldCount = 8
+      let i = 0
+      for(; i < fieldCount; i ++) {
+        fieldKey.push('field' + i)
+      }
+      const columns = fieldKey.map((each, idx) => ({
+        title: each,
+        dataIndex: each === 'field1' ? each : each + '.value',
+        fixed: idx === 0 ? 'left' : (idx === (fieldCount - 1) ? 'right' : false),
+        render: idx === 2 ? (t) => {
+          return <><div>multiLine</div><div>{t}</div></>
+        } : undefined
+      }))
+      const mockJson = fieldKey.reduce((json, each) => {
+        json[each] = each === 'field1' ? '@sentence(2,3)' : {
+          value: '@sentence(2,3)'
+        }
+        return json
+      }, {})
+      const mockData = mock({
+        'list|5': [mockJson],
+      })
+      const dataSource = mock(mockData).list
+      return <Table columns={columns} dataSource={dataSource} rowKey='field1' multiLine/>
+    }
+  }
+
+</Playground>
+
 ## Props
 
 | Props | Type | Default  | Desc |
 | ----- | ---- | ---- | ------- |
 | dataSource | Array | [] | data object |
 | colums | [columnsProps](#columnsprops)[] | [] | table columns |
-| rowKey | string | `none` | table row key, must be unique |
+| rowKey | string | `none` | table row key, must be unique, could be set like `a.b.c` |
 | className | string | '' | table classname |
 | style | object | `{}` | table style |
+| multiLine | boolean | false | table row use multiLine |
 | offsetTop | number | `0` | thead offsetTop |
 | onRow | (record: T) => TableRowProp| null | tableRow prop |
 | scrollBarOffset | number | 5 | scrollbar offset bottom |
@@ -119,6 +156,7 @@ export interface TableProp<T extends PlainObject = any> {
   rowKey?: string
   className?: string
   style?: React.CSSProperties
+  multiLine?: boolean
   offsetTop?: number
   scrollBarOffset?: number
   onRow?: (record: T) => TableRowProp
@@ -132,7 +170,7 @@ type TableRowProp = Partial<HTMLAttributes<HTMLTableRowElement>>
 | ----- | ---- | ---- | ------- |
 | title | any | `none` | column title |
 | key | string | `none` | column key |
-| dataIndex | string | '' | datasources key |
+| dataIndex | string | '' | Display field of the data record, could be set like `a.b.c` |
 | render | (text, record, index) => any | () => {} | column render function |
 | align | `left` &#124; `right` &#124; `center` &#124; `center` | column align |
 | className | string | '' | column className |

@@ -99,7 +99,7 @@ describe('test innerBar', () => {
       expect(innerStyle.transform).toEqual(style.transform)
       expect(innerStyle.width).toEqual(style.width)
       done()
-    }, 500)
+    }, 275)
   })
 })
 
@@ -117,8 +117,8 @@ describe('test outerBar position', () => {
       bottom: offsetBottom + 'px'
       // opacity: (bottom > 5 && percent < 1) ? 1 : 0
     }
-    expect(ins.outerStyle).toEqual(style)
-    expect(wrapper.find('.virtual-scroll').props().style).toEqual(style)
+    expect(ins.outerStyle).toMatchObject(style)
+    expect(wrapper.find('.virtual-scroll').props().style).toMatchObject(style)
   })
 })
 
@@ -127,9 +127,9 @@ describe('test window.onscroll', () => {
     const wrapper = getMount()
     const ins = wrapper.instance()
     const bottom = 300
-    const clientHeight = 200
-    Object.defineProperty(window.document.documentElement, 'clientHeight', {
-      value: clientHeight
+    const innerHeight = 200
+    Object.defineProperty(window, 'innerHeight', {
+      value: innerHeight
     })
     ins.$target = {
       current: {
@@ -142,7 +142,7 @@ describe('test window.onscroll', () => {
     }
     const e = new Event('scroll')
     window.dispatchEvent(e)
-    expect(ins.state.bottom).toEqual(bottom - clientHeight)
+    expect(ins.state.bottom).toEqual(bottom - innerHeight)
   })
   describe('scrollTarget is a dom', () => {
     const div = document.createElement('div')
@@ -355,20 +355,8 @@ describe('test shouldComponentUpdate', () => {
 })
 
 describe('test refresh', () => {
-  it('refresh should debounce', (done) => {
-    const wrapper = getMount()
-    const ins = wrapper.instance()
-    const spy = jest.spyOn(ins, 'onScrollHandle')
-    ins.forceUpdate()
-    ins.refreshScroll()
-    ins.refreshScroll()
-    ins.refreshScroll()
-    setTimeout(() => {
-      expect(spy).toBeCalledTimes(1)
-      done()
-    }, 300)
-  })
-  it('exec refresh when prop.child change', () => {
+
+  it('exec refresh when prop.child change, and set opacity=0', (done) => {
     const wrapper = getMount()
     const ins = wrapper.instance()
     wrapper.setState({
@@ -376,16 +364,26 @@ describe('test refresh', () => {
     })
     const spyRefresh = jest.spyOn(ins, 'refreshScroll')
     const spyUpdate = jest.spyOn(ins, 'componentDidUpdate')
+    const spySetOpacity = jest.spyOn(ins, 'setOpacity')
     wrapper.setProps({
       offsetBottom: 10
     })
     expect(spyUpdate).toBeCalledTimes(1)
     expect(spyRefresh).toBeCalledTimes(0)
+    expect(spySetOpacity).toBeCalledTimes(0)
     wrapper.setProps({
       children: 10
     })
-    expect(spyUpdate).toBeCalledTimes(2)
+    // exec update three times, one by refreshScroll, second by setOpacity(0) after refreshScroll
+    expect(spyUpdate).toBeCalledTimes(3)
     expect(spyRefresh).toBeCalledTimes(1)
+    expect(ins.state.opacity).toBe(0)
+    expect(spySetOpacity).toBeCalledTimes(1)
+    setTimeout(() => {
+      expect(ins.state.opacity).toBe(1)
+      expect(spySetOpacity).toBeCalledTimes(2)
+      done()
+    }, 550)
   })
 })
 
@@ -412,6 +410,68 @@ describe('test unmount', () => {
       ins.$target.current.dispatchEvent(e)
       expect(spyTargetScrollHandle).toBeCalledTimes(0)
       done()
-    }, 300)
+    }, 275)
+  })
+})
+
+describe('test scrolling', () => {
+  it('should set scrolling true when onScrolling, and set false onScrollEnd', (done) => {
+    const wrapper = getMount()
+    const ins = wrapper.instance()
+    // ins.refreshScroll()
+    setTimeout(() => {
+      expect(ins.scrolling).toBeFalsy()
+      ins.onScrollHandle()
+      expect(ins.scrolling).toBeTruthy()
+      setTimeout(() => {
+        expect(ins.scrolling).toBeFalsy()
+        done()
+      }, 275)
+    }, 500)
+  })
+})
+
+describe('test debounce', () => {
+  it('refresh should debounce', (done) => {
+    const wrapper = getMount()
+    const ins = wrapper.instance()
+    const spy = jest.spyOn(ins, 'onScrollHandle')
+    ins.refreshScroll()
+    ins.refreshScroll()
+    ins.refreshScroll()
+    setTimeout(() => {
+      expect(spy).toBeCalledTimes(1)
+      done()
+    }, 275)
+  })
+  it('onScrollEnd should debounce', (done) => {
+    const wrapper = getMount()
+    const ins = wrapper.instance()
+    setTimeout(() => {
+      ins.scrolling = true
+      ins.onScrollEnd()
+      expect(ins.scrolling).toBeTruthy()
+      ins.onScrollEnd()
+      expect(ins.scrolling).toBeTruthy()
+      ins.onScrollEnd()
+      expect(ins.scrolling).toBeTruthy()
+      setTimeout(() => {
+        expect(ins.scrolling).toBeFalsy()
+        done()
+      }, 250)
+    }, 275)
+  })
+  it('setOpacityShow should debounce', (done) => {
+    const wrapper = getMount()
+    const ins = wrapper.instance()
+    const spy = jest.spyOn(ins, 'setOpacity')
+    ins.setOpacityShow()
+    ins.setOpacityShow()
+    ins.setOpacityShow()
+    expect(spy).toBeCalledTimes(0)
+    setTimeout(() => {
+      expect(spy).toBeCalledTimes(1)
+      done()
+    }, 250)
   })
 })

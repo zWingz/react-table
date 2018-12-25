@@ -23,7 +23,7 @@
     "docz:build": "docz build",
     "build": "rollup -c",
     "tslint": "tslint --fix --format codeFrame --project .",
-    "dev": "webpack-serve --host 0.0.0.0 --port 2222",
+    "dev": "poi --serve",
     "pub": "yarn tslint && yarn build && yarn publish --registry http://registry.npmjs.org --access=public",
     "test": "jest"
   },
@@ -32,7 +32,7 @@
   "homepage": "https://zwing.site/react-table/#/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zWingz/react-table.git"
+    "url": "https://github.com/zWingz/react-table.git"
   },
   "bugs": {
     "url": "https://github.com/zWingz/react-table/issues"
@@ -52,9 +52,6 @@
     "@types/node": "^10.11.7",
     "@types/react": "^16.4.16",
     "autoprefixer": "^9.1.5",
-    "awesome-typescript-loader": "^5.2.1",
-    "babel-loader": "^8.0.2",
-    "css-loader": "^1.0.0",
     "cz-conventional-changelog": "^2.1.0",
     "docz": "0.12.13",
     "docz-plugin-css": "^0.11.0",
@@ -62,15 +59,14 @@
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.7.0",
     "enzyme-to-json": "^3.3.4",
-    "html-webpack-plugin": "^3.2.0",
     "jest": "^23.6.0",
     "mockjs": "^1.0.1-beta3",
     "node-sass": "^4.9.2",
-    "postcss-loader": "^3.0.0",
     "prop-types": "^15.6.2",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
-    "react-hot-loader": "^4.3.6",
+    "poi": "^12.2.6",
+    "@poi/plugin-typescript": "^12.0.0",
     "react-test-renderer": "^16.6.3",
     "rollup": "^0.67.3",
     "rollup-plugin-commonjs": "^9.1.6",
@@ -78,18 +74,12 @@
     "rollup-plugin-peer-deps-external": "^2.2.0",
     "rollup-plugin-postcss": "^1.6.2",
     "rollup-plugin-typescript": "^1.0.0",
-    "sass-loader": "^7.0.3",
     "ts-jest": "^23.10.5",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.15.0",
     "tslint-eslint-rules": "^5.4.0",
     "tslint-react": "^3.6.0",
-    "typescript": "^3.1.2",
-    "vue-style-loader": "^4.1.1",
-    "webpack": "^4.18.0",
-    "webpack-cli": "^3.1.0",
-    "webpack-merge": "^4.1.3",
-    "webpack-serve": "^2.0.2"
+    "typescript": "^3.1.2"
   },
   "config": {
     "commitizen": {

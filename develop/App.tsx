@@ -16,6 +16,12 @@ const App = hot(module)(() => {
   const columns: any[] = fieldKey.map((each, idx) => ({
     title: each,
     dataIndex: each,
+    render: idx === 2 ? (t) => {
+      return <>
+        <div>multiLine:</div>
+        <div>{t}</div>
+      </>
+    }: undefined,
     fixed: idx === 0 ? 'left' : idx === fieldCount - 1 ? 'right' : false
   }))
   const mockJson = fieldKey.reduce((json, each) => {
@@ -29,8 +35,8 @@ const App = hot(module)(() => {
   const dataSource = mock(mockData).list
   return (
     <div>
-      <div className='container' style={{ display: 'flex', flexWrap: 'wrap' }}>
-        <Table columns={columns} dataSource={dataSource} rowKey='field1' />
+      <div className='container'>
+        <Table columns={columns} dataSource={dataSource} rowKey='field1' multiLine/>
       </div>
     </div>
   )
