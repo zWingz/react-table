@@ -2,27 +2,12 @@ import * as React from 'react'
 import { shallow, mount } from 'enzyme'
 import BaseTable from '../BaseTable'
 import BaseRow from '../BaseRow'
-import { ColumnProps } from '../module'
-import {default as dataSource} from './fixtures/DataSource'
+import {DataSource, TestDataType, Columns} from './fixtures'
 
-type TestDataType = ColumnProps<typeof dataSource[0]>[]
-const columns: TestDataType = [{
-  title: 'id',
-  dataIndex: 'id'
-}, {
-  title: 'createTime',
-  dataIndex: 'createTime'
-}, {
-  title: <span>jsx title</span>,
-  dataIndex: 'name'
-}, {
-  title: 'title',
-  dataIndex: 'title',
-  className: 'th-custom-class'
-}]
+const columns: TestDataType = [...Columns]
 
 describe('test BaseTable render', () => {
-  const wrapper = shallow(<BaseTable columns={columns} dataSource={dataSource} rowKey='id'/>)
+  const wrapper = shallow(<BaseTable columns={columns} dataSource={DataSource} rowKey='id'/>)
   it('test snapshot render', () => {
     // expect(wrapper.find(BaseRow)).toHaveLength(dataSource.length)
     expect(wrapper).toMatchSnapshot('baseTable snapshot')
@@ -50,7 +35,7 @@ describe('test BaseTable props', () => {
     fontSize: '26px',
     padding: '10px 10px'
   }
-  const wrapper = shallow(<BaseTable top={top} className={className} style={style} columns={columns} dataSource={dataSource} rowKey='id'/>)
+  const wrapper = shallow(<BaseTable top={top} className={className} style={style} columns={columns} dataSource={DataSource} rowKey='id'/>)
   it('test classname', () => {
     expect(wrapper.hasClass('custom-table')).toBeTruthy()
     expect(wrapper.hasClass('fixed-table')).toBeTruthy()
@@ -75,9 +60,29 @@ describe('test BaseTable props', () => {
 describe('test ref', () => {
   it('test ref', () => {
     const ref = jest.fn(val => val)
-    const wrapper = mount(<BaseTable getRef={ref} columns={columns} dataSource={dataSource} rowKey='id'/>)
+    const wrapper = mount(<BaseTable getRef={ref} columns={columns} dataSource={DataSource} rowKey='id'/>)
     expect(ref).toBeCalledTimes(1)
     const table = wrapper.getDOMNode()
     expect(ref.mock.calls[0][0]).toBe(table)
+  })
+})
+
+describe('test chain key', () => {
+  it('should get key from chainObject', () => {
+    const data = DataSource.map(each => ({
+      ...each,
+      chain: {
+        id: each.createTime
+      }
+    }))
+    const wrapper = mount(<BaseTable columns={columns} dataSource={data} rowKey='chain.id'/>)
+    expect(wrapper.find(BaseRow).at(0).key()).toEqual(DataSource[0].createTime)
+  })
+})
+
+describe('test multiLine', () => {
+  it('should add className table-multiLine', () => {
+    const wrapper = mount(<BaseTable multiLine columns={columns} dataSource={DataSource} rowKey='id'/>)
+    expect(wrapper.find('table').props().className.includes('table-multiLine')).toBeTruthy()
   })
 })

@@ -77,7 +77,7 @@ class BaseTable<T extends PlainObject = any> extends React.PureComponent<BaseTab
   render() {
     const { className, multiLine, style, getRef } = this.props
     return (
-        <table ref={getRef} className={classnames('fixed-table', className, { multiLine })} style={style}>
+        <table ref={getRef} className={classnames('fixed-table', className, { 'table-multiLine': multiLine })} style={style}>
           {this.renderThead()}
           {this.renderTbody()}
         </table>

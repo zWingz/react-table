@@ -41,10 +41,12 @@ exports[`test BaseTable render test snapshot render: baseTable snapshot 1`] = `
         Array [
           Object {
             "dataIndex": "id",
+            "fixed": "left",
             "title": "id",
           },
           Object {
             "dataIndex": "createTime",
+            "fixed": "left",
             "title": "createTime",
           },
           Object {
@@ -56,6 +58,7 @@ exports[`test BaseTable render test snapshot render: baseTable snapshot 1`] = `
           Object {
             "className": "th-custom-class",
             "dataIndex": "title",
+            "fixed": "right",
             "title": "title",
           },
         ]
@@ -76,10 +79,12 @@ exports[`test BaseTable render test snapshot render: baseTable snapshot 1`] = `
         Array [
           Object {
             "dataIndex": "id",
+            "fixed": "left",
             "title": "id",
           },
           Object {
             "dataIndex": "createTime",
+            "fixed": "left",
             "title": "createTime",
           },
           Object {
@@ -91,6 +96,7 @@ exports[`test BaseTable render test snapshot render: baseTable snapshot 1`] = `
           Object {
             "className": "th-custom-class",
             "dataIndex": "title",
+            "fixed": "right",
             "title": "title",
           },
         ]
@@ -111,10 +117,12 @@ exports[`test BaseTable render test snapshot render: baseTable snapshot 1`] = `
         Array [
           Object {
             "dataIndex": "id",
+            "fixed": "left",
             "title": "id",
           },
           Object {
             "dataIndex": "createTime",
+            "fixed": "left",
             "title": "createTime",
           },
           Object {
@@ -126,6 +134,7 @@ exports[`test BaseTable render test snapshot render: baseTable snapshot 1`] = `
           Object {
             "className": "th-custom-class",
             "dataIndex": "title",
+            "fixed": "right",
             "title": "title",
           },
         ]
@@ -146,10 +155,12 @@ exports[`test BaseTable render test snapshot render: baseTable snapshot 1`] = `
         Array [
           Object {
             "dataIndex": "id",
+            "fixed": "left",
             "title": "id",
           },
           Object {
             "dataIndex": "createTime",
+            "fixed": "left",
             "title": "createTime",
           },
           Object {
@@ -161,6 +172,7 @@ exports[`test BaseTable render test snapshot render: baseTable snapshot 1`] = `
           Object {
             "className": "th-custom-class",
             "dataIndex": "title",
+            "fixed": "right",
             "title": "title",
           },
         ]

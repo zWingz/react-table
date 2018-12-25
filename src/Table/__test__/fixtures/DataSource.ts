@@ -1,4 +1,5 @@
-export default [
+import { ColumnProps } from '../../module'
+const DataSource = [
   {
     'id': '440000200106140115',
     'createTime': '1976-04-02',
@@ -24,3 +25,5 @@ export default [
     'title': '一和下'
   }
 ]
+export type TestDataType = ColumnProps<typeof DataSource[0]>[]
+export {DataSource}
