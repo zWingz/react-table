@@ -213,11 +213,15 @@ describe('test RowContext', () => {
       }
     ]
     const wrapper = mount(
-      <Context.Provider value={val}>
-        <BaseRow columns={column} record={record} rowIndex={0} />
-        <BaseRow columns={column} record={record} rowIndex={1} />
-        <BaseRow columns={column} record={record} rowIndex={2} />
-      </Context.Provider>
+      <table>
+        <tbody>
+          <Context.Provider value={val}>
+            <BaseRow columns={column} record={record} rowIndex={0} />
+            <BaseRow columns={column} record={record} rowIndex={1} />
+            <BaseRow columns={column} record={record} rowIndex={2} />
+          </Context.Provider>
+        </tbody>
+      </table>
     )
     const tr = wrapper.find('tr')
     expect(tr).toHaveLength(val.length)
