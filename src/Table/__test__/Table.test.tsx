@@ -72,8 +72,35 @@ describe('test scroll top', () => {
   const wrapper = mount<TableProp, any>(<Table dataSource={DataSource} columns={columns} rowKey='id'/>)
   const ins = wrapper.instance() as Table
   let cacheData = null, cacheColumns = null
+  const height = 1000
+  const theadHeight = 36
+  const $tbody = ins.$tbody
+  it('maxTop is calc by table.height && thead.clientHeight', () => {
+    ins.$tbody = {
+      current: {
+        getBoundingClientRect() {
+          return {
+            height,
+            top: -10000
+          } as ClientRect
+        },
+        querySelector(selectors) {
+          if(selectors === 'thead tr') {
+            return {
+              clientHeight: theadHeight
+            }
+          }
+        }
+      } as HTMLTableElement
+    }
+    ins.getHeight()
+    const max = height - theadHeight
+    expect(ins.maxTop).toEqual(max)
+    window.dispatchEvent(new Event('scroll'))
+    expect(wrapper.state().top).toBe(max)
+    // expect(ins.maxTop).toEqual(height - theadHeight)
+  })
   it('window scroll should update state.top', () => {
-    const $tbody = ins.$tbody
     const top = 105
     ins.$tbody = {
       current: {
@@ -86,9 +113,9 @@ describe('test scroll top', () => {
     }
     const event = new Event('scroll')
     window.dispatchEvent(event)
+    expect(wrapper.state().top).toBe(top)
     cacheData = ins.cacheData
     cacheColumns = ins.cacheColumns
-    expect(wrapper.state().top).toBe(top)
     ins.$tbody = $tbody
   })
   it('test cacheData after scroll', () => {

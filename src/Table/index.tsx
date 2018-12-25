@@ -27,6 +27,7 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
     top: 0,
     rowsHeight: []
   }
+  maxTop: number = 0
   $tbody: RefObject<HTMLTableElement> = null
   // $right: RefObject<HTMLTableElement> = null
   // $left: RefObject<HTMLTableElement> = null
@@ -112,7 +113,7 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
     // this.setScrollIng()
     const { top } = current.getBoundingClientRect()
     this.setState({
-      top: top < 0 ? -top : 0
+      top: top < 0 ? Math.min(-top, this.maxTop) : 0
     })
   }
 
@@ -130,12 +131,19 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
   }
 
   getHeight() {
-    if (!this.$tbody.current || !this.props.multiLine) {
-      return []
+    const { current } = this.$tbody
+    if(!current) return
+    const thead = current.querySelector('thead tr')
+    const { height } = current.getBoundingClientRect()
+    if(thead) {
+      this.maxTop = height - thead.clientHeight
+    }
+    if (!this.props.multiLine) {
+      return
     }
     this.setState({
       rowsHeight: Array.from(
-        this.$tbody.current.querySelectorAll('tbody tr')
+        current.querySelectorAll('tbody tr')
       ).map(each => (each as HTMLElement).offsetHeight)
     })
   }

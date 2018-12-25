@@ -21,9 +21,10 @@
 | ----- | ---- | ---- | ------- |
 | dataSource | Array | [] | data object |
 | colums | [columnsProps](#columnsprops)[] | [] | table columns |
-| rowKey | string | `none` | table row key, must be unique |
+| rowKey | string | `none` | table row key, must be unique, could be set like `a.b.c` |
 | className | string | '' | table classname |
 | style | object | `{}` | table style |
+| multiLine | boolean | false | table row multiLine |
 | offsetTop | number | `0` | thead offsetTop |
 | scrollBarOffset | number | 5 | scrollbar offset bottom |
 
@@ -34,6 +35,7 @@ interface TableProp<T> {
   rowKey?: string
   className?: string
   style?: React.CSSProperties
+  multiLine?: boolean
   offsetTop?: number
   scrollBarOffset?: number
 }
@@ -45,7 +47,7 @@ interface TableProp<T> {
 | ----- | ---- | ---- | ------- |
 | title | any | `none` | column title |
 | key | string | `none` | column key |
-| dataIndex | string | '' | datasources key |
+| dataIndex | string | '' | Display field of the data record, could be set like `a.b.c` |
 | render | (text, record, index) => any | () => {} | column render function |
 | align | `left` &#124; `right` &#124; `center` | `center` | column align |
 | className | string | '' | column className |

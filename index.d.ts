@@ -22,6 +22,7 @@ export interface TableProp<T extends PlainObject = any> {
   className?: string
   style?: React.CSSProperties
   offsetTop?: number
+  multiLine?: boolean
   scrollBarOffset?: number
   onRow?: (record: T) => TableRowProp
 }
