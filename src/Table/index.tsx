@@ -9,6 +9,7 @@ import './style.scss'
 import classnames from 'classnames'
 
 function querySelectorAll(selector, context) {
+  /* istanbul ignore next */
   const ctx = context || document
   const dom = ctx.querySelectorAll(selector)
   return Array.prototype.slice.call(dom, 0)

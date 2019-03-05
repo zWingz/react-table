@@ -16,9 +16,15 @@ interface HorizontalScrollBarStat {
   scrollLeft: number
   opacity: number // 是否需要设置透明
 }
+
 function checkShow({ bottom, percent }) {
   return bottom > 5 && percent < 1
 }
+
+function shallowequal(prev, next) {
+  return Object.keys(prev).some(each => prev[each] !== next[each])
+}
+
 class HorizontalScrollBar extends React.Component<
   HorizontalScrollBarProp,
   HorizontalScrollBarStat
@@ -31,6 +37,7 @@ class HorizontalScrollBar extends React.Component<
     const { percent, scrollLeft } = this.state
     let barScroll = scrollLeft * percent
     if (Number.isNaN(barScroll)) {
+      /* istanbul ignore next */
       barScroll = 0
     }
     return {
@@ -184,11 +191,7 @@ class HorizontalScrollBar extends React.Component<
       return
     }
     this.setX(event.clientX)
-    document.body.addEventListener(
-      'mousemove',
-      this.bodyMouseMoveHandle,
-      false
-    )
+    document.body.addEventListener('mousemove', this.bodyMouseMoveHandle, false)
     document.body.classList.add('no-select')
     document.body.addEventListener('mouseup', this.bodyMouseUpHandle, false)
   }
@@ -220,6 +223,8 @@ class HorizontalScrollBar extends React.Component<
     document.body.classList.remove('no-select')
   }
   setOpacity(val) {
+    /* istanbul ignore next */
+    if (!this._isMounted) return
     this.setState({
       opacity: val
     })
@@ -253,8 +258,13 @@ class HorizontalScrollBar extends React.Component<
     const left = scrollLeft + speed
     this.setScrollLeft(left > scrollWidth ? scrollWidth : left)
   }
-  shouldComponentUpdate(nextProps, nextState, nextContext) {
-    return this.showBar || checkShow(nextState) || this.props !== nextProps
+  shouldComponentUpdate(nextProps, nextState) {
+    // return this.showBar || checkShow(nextState) || this.props !== nextProps
+    return (
+      shallowequal(this.props, nextProps) ||
+      (shallowequal(this.state, nextState) &&
+        (this.showBar || checkShow(nextState)))
+    )
   }
   componentDidMount() {
     this._isMounted = true
@@ -283,32 +293,39 @@ class HorizontalScrollBar extends React.Component<
     )
     this.refreshScroll()
   }
-  componentDidUpdate(prevProps) {
-    if (prevProps.children !== this.props.children && !this.scrolling) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (
+      !this.scrolling &&
+      snapshot !== false &&
+      snapshot !== this.$target.current.scrollWidth
+    ) {
       this.refreshScroll(true)
     }
   }
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    if (this.scrolling) return false
+    return this.$target.current.scrollWidth
+  }
   componentWillUnmount() {
     this._isMounted = false
-    this.scroller.removeEventListener('scroll', this.onScrollHandle)
-    this.scroller.removeEventListener('resize', this.onScrollHandle)
     this.iframe.removeEventListener('resize', this.refreshScroll)
     this.iframe.remove()
+    this.scroller.removeEventListener('scroll', this.onScrollHandle)
+    this.scroller.removeEventListener('resize', this.onScrollHandle)
+    this.$target.current.removeEventListener('scroll', this.targetScrollHandle)
   }
   render() {
     return (
       <div
         className={this.props.className}
-        style={{ overflow: 'hidden', position: 'relative' }}
-      >
+        style={{ overflow: 'hidden', position: 'relative' }}>
         <div ref={this.$target} className='scroll-container'>
           {this.props.children}
           {this.showBar && (
             <div
               className='virtual-scroll overhidden'
               style={this.outerStyle}
-              onMouseDown={this.barOuterMouseDownHandle}
-            >
+              onMouseDown={this.barOuterMouseDownHandle}>
               <div
                 ref={this.$bar}
                 className='virtual-scroll-bar'

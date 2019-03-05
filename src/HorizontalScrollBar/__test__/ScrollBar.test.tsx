@@ -356,7 +356,7 @@ describe('test shouldComponentUpdate', () => {
 
 describe('test refresh', () => {
 
-  it('exec refresh when prop.child change, and set opacity=0', (done) => {
+  it('refresh when target.scrollWidth change, and set opacity=0', (done) => {
     const wrapper = getMount()
     const ins = wrapper.instance()
     wrapper.setState({
@@ -366,11 +366,16 @@ describe('test refresh', () => {
     const spyUpdate = jest.spyOn(ins, 'componentDidUpdate')
     const spySetOpacity = jest.spyOn(ins, 'setOpacity')
     wrapper.setProps({
-      offsetBottom: 10
+      offsetBottom: 20
     })
     expect(spyUpdate).toBeCalledTimes(1)
     expect(spyRefresh).toBeCalledTimes(0)
     expect(spySetOpacity).toBeCalledTimes(0)
+    ins.$target = {
+      current: {
+        scrollWidth: 100
+      }
+    } as any
     wrapper.setProps({
       children: 10
     })
