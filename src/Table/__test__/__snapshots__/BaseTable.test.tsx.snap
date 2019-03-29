@@ -5,10 +5,7 @@ exports[`test BaseTable render test snapshot render: baseTable snapshot 1`] = `
   className="fixed-table"
   style={Object {}}
 >
-  <thead
-    className=""
-    style={Object {}}
-  >
+  <thead>
     <tr>
       <th
         key="0"
@@ -193,10 +190,7 @@ exports[`test BaseTable render test snapshot render: baseTable snapshot 1`] = `
 `;
 
 exports[`test BaseTable render test thead render: thead snapshot 1`] = `
-<thead
-  className=""
-  style={Object {}}
->
+<thead>
   <tr>
     <th
       key="0"

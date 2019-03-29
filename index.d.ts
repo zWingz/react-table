@@ -2,7 +2,7 @@ import React, { HTMLAttributes } from "react";
 type PlainObject = {
   [key: string]: any
 }
-export interface ColumnProps<T extends PlainObject = any> {
+export interface ColumnProps<T extends PlainObject = PlainObject> {
   title?: React.ReactNode
   key?: React.Key
   dataIndex?: keyof T | string
@@ -15,7 +15,7 @@ export interface ColumnProps<T extends PlainObject = any> {
 export type TableRowProp = Partial<HTMLAttributes<HTMLTableRowElement>>
 
 
-export interface TableProp<T extends PlainObject = any> {
+export interface TableProp<T extends PlainObject = PlainObject> {
   columns?: ColumnProps<T>[]
   dataSource?: T[]
   rowKey?: string
@@ -32,29 +32,23 @@ export interface HorizontalScrollBarProp {
   scrollTarget?: string | HTMLElement;
   offsetBottom?: number;
 }
-interface HorizontalScrollBarStat {
-  width: number,
-  percent: number, // 滚动按钮宽度占比
-  x: number, // 鼠标按键x坐标
-  bottom: number, // 底部
-  scrollLeft: number,
-  // opacity: number // 是否需要设置透明
-}
 
-export interface BaseTableProp<T extends PlainObject = any> {
-  columns?: ColumnProps<T>[];
-  dataSource?: T[];
-  rowKey?: string;
-  top?: string | number;
-  getRef?: React.Ref<HTMLTableElement>;
-  className?: string;
-  style?: React.CSSProperties;
-  onRow?: (record: T) => TableRowProp;
+interface BaseTableProp<T extends PlainObject = PlainObject> {
+  columns?: ColumnProps<T>[]
+  dataSource?: T[]
+  rowKey?: string
+  maxTop?: number
+  getRef?: React.RefObject<HTMLTableElement>
+  className?: string
+  multiLine?: boolean
+  style?: React.CSSProperties
+  offsetTop?: number
+  onRow?: (record: T) => TableRowProp
 }
 
 declare module "@zzwing/react-table" {
   // type definitions goes here
   class BaseTable<T extends PlainObject = any> extends React.PureComponent<BaseTableProp<T>> {}
   class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T>> {}
-  class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp, HorizontalScrollBarStat> {}
+  class HorizontalScrollBar extends React.Component<HorizontalScrollBarProp> {}
 }

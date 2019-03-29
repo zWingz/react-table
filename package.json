@@ -38,7 +38,6 @@
     "url": "https://github.com/zWingz/react-table/issues"
   },
   "peerDependencies": {
-    "prop-types": ">=15.6.2",
     "react": ">=16.0.0",
     "react-dom": ">=16.0.0"
   },
@@ -57,11 +56,11 @@
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.7.0",
     "enzyme-to-json": "^3.3.4",
+    "husky-tslint-pre-commit": "^1.0.3",
     "jest": "^24.1.0",
     "mockjs": "^1.0.1-beta3",
     "node-sass": "^4.9.2",
     "poi": "^12.2.6",
-    "prop-types": "^15.6.2",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "rollup": "^1.4.1",
@@ -113,5 +112,10 @@
   },
   "dependencies": {
     "classnames": "^2.2.6"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "node node_modules/husky-tslint-pre-commit/pre-commit.js"
+    }
   }
 }

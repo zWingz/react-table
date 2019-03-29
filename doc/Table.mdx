@@ -3,9 +3,10 @@ name: Table
 route: /table
 order: 4
 ---
+
 import { Table } from '../src'
 import { Playground } from 'docz'
-import {mock} from 'mockjs'
+import { mock } from 'mockjs'
 
 # Table
 
@@ -15,7 +16,8 @@ import {mock} from 'mockjs'
 - Fixed `left` and `right` by `absolute`
 
 ### Base Use
-``` typescript
+
+```typescript
 const dataSource = []
 const column = [{
   title: 'id',
@@ -59,11 +61,12 @@ const column = [{
 ### ChainPath
 
 ```typescript
-const columns = [{
-  title: 'other',
-  dataIndex: 'other.value'
-}]
-
+const columns = [
+  {
+    title: 'other',
+    dataIndex: 'other.value'
+  }
+]
 ```
 
 <Playground>
@@ -95,7 +98,6 @@ const columns = [{
   }
 
 </Playground>
-
 
 ### MultiLine
 
@@ -134,49 +136,52 @@ const columns = [{
 
 ## Props
 
-| Props | Type | Default  | Desc |
-| ----- | ---- | ---- | ------- |
-| dataSource | Array | [] | data object |
-| colums | [columnsProps](#columnsprops)[] | [] | table columns |
-| rowKey | string | `none` | table row key, must be unique, could be set like `a.b.c` |
-| className | string | '' | table classname |
-| style | object | `{}` | table style |
-| multiLine | boolean | false | table row use multiLine |
-| offsetTop | number | `0` | thead offsetTop |
-| onRow | (record: T) => TableRowProp| null | tableRow prop |
-| scrollBarOffset | number | 5 | scrollbar offset bottom |
+### Table
+
+| Props           | Type                            | Default | Desc                                  |
+| --------------- | ------------------------------- | ------- | ------------------------------------- |
+| dataSource      | Array                           | []      | dataSource                            |
+| colums          | [columnsProps](#columnsprops)[] | []      | columns props                         |
+| rowKey          | string                          | `none`  | row key, unique, eg: `id`/`a.b.c`     |
+| className       | string                          | ''      | table classname                       |
+| style           | object                          | `{}`    | table style                           |
+| multiLine       | boolean                         | false   | if row is multiline, need to set true |
+| offsetTop       | number                          | `0`     | thead fixed-top offset                |
+| scrollBarOffset | number                          | 5       | scrollbar fixed-bottom offset         |
+| onRow           | (record: T) => TableRowProp     | --      | a function return table row props     |
 
 ```typescript
 type PlainObject = {
   [key: string]: any
 }
-export interface TableProp<T extends PlainObject = any> {
+
+interface TableProp<T extends PlainObject = PlainObject> {
   columns?: ColumnProps<T>[]
   dataSource?: T[]
   rowKey?: string
   className?: string
   style?: React.CSSProperties
-  multiLine?: boolean
   offsetTop?: number
+  multiLine?: boolean
   scrollBarOffset?: number
   onRow?: (record: T) => TableRowProp
 }
-type TableRowProp = Partial<HTMLAttributes<HTMLTableRowElement>>
 ```
 
-### ColumnsProps
+#### ColumnsProps
 
-| Props | Type | Default  | Desc |
-| ----- | ---- | ---- | ------- |
-| title | any | `none` | column title |
-| key | string | `none` | column key |
-| dataIndex | string | '' | Display field of the data record, could be set like `a.b.c` |
-| render | (text, record, index) => any | () => {} | column render function |
-| align | `left` &#124; `right` &#124; `center` &#124; `center` | column align |
-| className | string | '' | column className |
+| Props     | Type                                  | Default  | Desc                                                   |
+| --------- | ------------------------------------- | -------- | ------------------------------------------------------ |
+| title     | any                                   | `none`   | column title                                           |
+| key       | string                                | `none`   | column key, default is `dataIndex`                     |
+| dataIndex | string                                | ''       | data field in each record, support chain eg: `a.b.c.d` |
+| render    | (text, record, index) => any          | () => {} | column render function                                 |
+| align     | `left` &#124; `right` &#124; `center` | `center` | text align                                             |
+| className | string                                | ''       | --                                                     |
+| fixed     | `left` &#124; `right` &#124; `right`  | `false`  | fixed flag                                             |
 
 ```typescript
-interface ColumnProps<T extends PlainObject = any> {
+interface ColumnProps<T> {
   title?: React.ReactNode
   key?: React.Key
   dataIndex?: keyof T | string
@@ -184,5 +189,24 @@ interface ColumnProps<T extends PlainObject = any> {
   align?: 'left' | 'right' | 'center'
   className?: string
   fixed?: boolean | ('left' | 'right')
+}
+```
+
+#### BaseTable
+
+like `Table`, but not fixed `left` and `right
+
+```typescript
+export interface BaseTableProp<T extends PlainObject = PlainObject> {
+  columns?: ColumnProps<T>[]
+  dataSource?: T[]
+  rowKey?: string
+  maxTop?: number
+  getRef?: React.RefObject<HTMLTableElement>
+  className?: string
+  multiLine?: boolean
+  style?: React.CSSProperties
+  offsetTop?: number
+  onRow?: (record: T) => TableRowProp
 }
 ```
