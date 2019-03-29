@@ -3,6 +3,7 @@ name: ScrollBar
 route: /scrollbar
 order: 2
 ---
+
 import { HorizontalScrollBar } from '../src'
 import { Playground } from 'docz'
 import { mock } from 'mockjs'
@@ -20,37 +21,47 @@ import Image from './assets/1.jpg'
 ## Base Usage, dependent on Window
 
 <Playground>
-  {
-    () => {
-      return <HorizontalScrollBar>
-        <div style={{fontSize: '0px'}}>
-          <img src={Image}></img>
+  {() => {
+    return (
+      <HorizontalScrollBar>
+        <div style={{ fontSize: '0px' }}>
+          <img src={Image} />
         </div>
       </HorizontalScrollBar>
-    }
-  }
+    )
+  }}
 </Playground>
 
 ## Dependent on a scrollTarget
 
 <Playground>
-  {
-    () => {
-      return <div id='test-scroller' style={{overflow: 'auto', width: '600px', height: '600px'}}>
+  {() => {
+    return (
+      <div
+        id='test-scroller'
+        style={{ overflow: 'auto', width: '600px', height: '600px' }}>
         <HorizontalScrollBar scrollTarget='test-scroller'>
-          <div style={{fontSize: '0px'}}>
-            <img src={Image}></img>
+          <div style={{ fontSize: '0px' }}>
+            <img src={Image} />
           </div>
         </HorizontalScrollBar>
       </div>
-    }
-  }
+    )
+  }}
 </Playground>
 
 ## Props
 
-| Props | Type | Default  | Desc |
-| ----- | ---- | ---- | ------- |
-| className | string | '' | scrollbar className |
-| scrollTarget | string &#124; HTMLElement | window | native scroll container |
-| offsetBottom | number | 5 | scrollbar bottom offset |
+| Props        | Type                      | Default | Desc                    |
+| ------------ | ------------------------- | ------- | ----------------------- |
+| className    | string                    | ''      | scrollbar className     |
+| scrollTarget | string &#124; HTMLElement | window  | native scroll container |
+| offsetBottom | number                    | 5       | scrollbar bottom offset |
+
+```typescript
+interface HorizontalScrollBarProp {
+  className?: string
+  scrollTarget?: string | HTMLElement
+  offsetBottom?: number
+}
+```

@@ -1,50 +1,49 @@
 import * as React from 'react'
-import * as PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { ColumnProps, TableRowProp, PlainObject } from './module'
 import BaseRow from './BaseRow'
 import { getChainObject } from '../utils'
-interface BaseTableProp<T extends PlainObject = any> {
+import { addListeners, removeListeners } from './Listener'
+interface BaseTableProp<T extends PlainObject = PlainObject> {
   columns?: ColumnProps<T>[]
   dataSource?: T[]
   rowKey?: string
-  top?: string | number,
-  getRef?: React.Ref<HTMLTableElement>,
+  maxTop?: number
+  getRef?: React.RefObject<HTMLTableElement>
   className?: string
   multiLine?: boolean
-  style?: React.CSSProperties,
+  style?: React.CSSProperties
+  offsetTop?: number
   onRow?: (record: T) => TableRowProp
 }
 
-class BaseTable<T extends PlainObject = any> extends React.PureComponent<BaseTableProp<T>> {
-  static propTypes = {
-    dataSource: PropTypes.array,
-    columns: PropTypes.array,
-    rowKey: PropTypes.string,
-    top: PropTypes.number
-  }
+class BaseTable<T extends PlainObject = PlainObject> extends React.PureComponent<
+  BaseTableProp<T>
+> {
   static defaultProps = {
     style: {},
     dataSource: [],
-    columns: []
+    columns: [],
+    maxTop: 0,
+    offsetTop: 0
   }
-  get theadStyle(): React.CSSProperties {
-    const { top } = this.props
-    if(top) {
-      return {
-        transform: `translate3d(0px, ${top}px, 1px)`
-      }
-    }
-    return {}
+  $content: React.RefObject<HTMLTableElement> = null
+  $thead: React.RefObject<HTMLTableSectionElement> = null
+  constructor(p) {
+    super(p)
+    this.$content = React.createRef()
+    this.$thead = React.createRef()
   }
 
   renderThead() {
-    const { columns, top } = this.props
+    const { columns } = this.props
     return (
-      <thead className={top ? 'fixed' : ''} style={this.theadStyle}>
+      <thead ref={this.$thead}>
         <tr>
           {columns.map((each, idx) => (
-            <th className={each.className} key={idx}>{each.title}</th>
+            <th className={each.className} key={idx}>
+              {each.title}
+            </th>
           ))}
         </tr>
       </thead>
@@ -57,30 +56,74 @@ class BaseTable<T extends PlainObject = any> extends React.PureComponent<BaseTab
       <tbody>
         {dataSource.map((record, idx) => {
           let key = ''
-          if((rowKey as string).includes('.')) {
-            key = getChainObject(record, (rowKey as string))
+          if ((rowKey as string).includes('.')) {
+            key = getChainObject(record, rowKey as string)
           } else {
             key = record[rowKey] + ''
           }
-          return <BaseRow
-            key={key}
-            record={record}
-            rowIndex={idx}
-            onRow={onRow}
-            columns={columns}
-          />
+          return (
+            <BaseRow
+              key={key}
+              record={record}
+              rowIndex={idx}
+              onRow={onRow}
+              columns={columns}
+            />
+          )
         })}
       </tbody>
     )
   }
-
+  setTheadStyle(top) {
+    const { current } = this.$thead
+    if (top) {
+      const style = `transform: translate3d(0px, ${top}px, 1px); will-change: transform;`
+      current.classList.add('fixed')
+      ;(current.style as any) = style
+    } else {
+      (current.style as any) = ''
+      current.classList.remove('fixed')
+    }
+  }
+  scrollHandle = () => {
+    const { current } = this.$content
+    if (!current) {
+      return
+    }
+    const top = current.getBoundingClientRect().top - this.props.offsetTop
+    const tt = top < 0 ? Math.min(-top, this.props.maxTop) : 0
+    this.setTheadStyle(tt)
+  }
+  getRef = ref => {
+    (this.$content.current as any) = ref
+    if (this.props.getRef) {
+      (this.props.getRef.current as any) = ref
+    }
+  }
+  addEffect() {
+    addListeners(this.scrollHandle)
+  }
+  removeEffect() {
+    removeListeners(this.scrollHandle)
+  }
+  componentDidMount() {
+    this.addEffect()
+  }
+  componentWillUnmount() {
+    this.removeEffect()
+  }
   render() {
-    const { className, multiLine, style, getRef } = this.props
+    const { className, multiLine, style } = this.props
     return (
-        <table ref={getRef} className={classnames('fixed-table', className, { 'table-multiLine': multiLine })} style={style}>
-          {this.renderThead()}
-          {this.renderTbody()}
-        </table>
+      <table
+        ref={this.getRef}
+        className={classnames('fixed-table', className, {
+          'table-multiLine': multiLine
+        })}
+        style={style}>
+        {this.renderThead()}
+        {this.renderTbody()}
+      </table>
     )
   }
 }

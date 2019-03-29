@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { RefObject } from 'react'
-import * as PropTypes from 'prop-types'
 import { TableProp, PlainObject, ColumnProps } from './module'
 import BaseTable from './BaseTable'
 import ScrollBar from '../HorizontalScrollBar'
@@ -15,20 +14,14 @@ function querySelectorAll(selector, context) {
   return Array.prototype.slice.call(dom, 0)
 }
 
-class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T>> {
-
-  static propTypes = {
-    dataSource: PropTypes.array,
-    columns: PropTypes.array,
-    rowKey: PropTypes.string,
-    offsetTop: PropTypes.number
-  }
-
+class Table<T extends PlainObject = PlainObject> extends React.PureComponent<
+  TableProp<T>
+> {
   state = {
-    top: 0,
-    rowsHeight: []
+    // top: 0,
+    rowsHeight: [],
+    maxTop: 0
   }
-  maxTop: number = 0
   $tbody: RefObject<HTMLTableElement> = null
   // $right: RefObject<HTMLTableElement> = null
   // $left: RefObject<HTMLTableElement> = null
@@ -42,11 +35,9 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
     super(props)
     this.content = React.createRef()
     this.$tbody = React.createRef()
-    // this.$left = React.createRef()
-    // this.$right = React.createRef()
   }
 
-  get formatData(): {[k in 'left' | 'right' | 'body']: ColumnProps<T>[]} {
+  get formatData(): { [k in 'left' | 'right' | 'body']: ColumnProps<T>[] } {
     const { columns } = this.props
     if (columns === this.cacheColumns && this.cacheData) {
       return this.cacheData
@@ -56,7 +47,7 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
     const right = []
     columns.forEach(each => {
       const { fixed } = each
-      if(!fixed) {
+      if (!fixed) {
         return
       }
       if (fixed === 'right') {
@@ -74,14 +65,6 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
     }
     return this.cacheData
   }
-
-  // get tableContentStyle() {
-  //   const { paddingLeft, paddingRight } = this.state
-  //   return {
-  //     paddingLeft: paddingLeft + 'px',
-  //     paddingRight: paddingRight + 'px'
-  //   }
-  // }
 
   hoverClass(e, type) {
     const tr = e.target.closest('tr')
@@ -106,71 +89,52 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
     this.hoverClass(e, 'remove')
   }
 
-  scrollHandle = () => {
-    const { current } = this.$tbody
-    if (!current) {
-      return
-    }
-    // this.setScrollIng()
-    const { top } = current.getBoundingClientRect()
-    this.setState({
-      top: top < 0 ? Math.min(-top, this.maxTop) : 0
-    })
-  }
-
-  addEffect() {
-    window.addEventListener('scroll', this.scrollHandle, {
-      passive: true
-    })
-    window.addEventListener('resize', this.scrollHandle, {
-      passive: true
-    })
-  }
-  removeEffect() {
-    window.removeEventListener('scroll', this.scrollHandle)
-    window.removeEventListener('resize', this.scrollHandle)
-  }
-
   getHeight() {
     const { current } = this.$tbody
-    if(!current) return
+    if (!current) return
     const thead = current.querySelector('thead tr')
     const { height } = current.getBoundingClientRect()
-    if(thead) {
-      this.maxTop = height - thead.clientHeight
-    }
-    if (!this.props.multiLine) {
-      return
+    const maxTop = thead ? height - thead.clientHeight : 0
+    let rowsHeight = []
+    if (this.props.multiLine) {
+      rowsHeight = Array.prototype.slice
+        .call(current.querySelectorAll('tbody tr'))
+        .map(each => (each as HTMLElement).offsetHeight)
     }
     this.setState({
-      rowsHeight: Array.from(
-        current.querySelectorAll('tbody tr')
-      ).map(each => (each as HTMLElement).offsetHeight)
+      maxTop,
+      rowsHeight
     })
   }
   componentDidMount() {
-    this.addEffect()
     this.getHeight()
   }
 
-  componentDidUpdate(prevProp, prevState, snap) {
+  componentDidUpdate(prevProp) {
     if (prevProp !== this.props) {
       this.getHeight()
     }
   }
 
-  componentWillUnmount() {
-    this.removeEffect()
-  }
   render() {
-    const { dataSource, rowKey, className, scrollBarOffset, onRow, multiLine } = this.props
+    const {
+      dataSource,
+      rowKey,
+      className,
+      scrollBarOffset,
+      onRow,
+      multiLine,
+      offsetTop
+    } = this.props
     const { left, body, right } = this.formatData
     const commonProp = {
       dataSource,
-      top: this.state.top,
+      // top: this.state.top,
       rowKey,
       onRow,
-      multiLine
+      multiLine,
+      offsetTop,
+      maxTop: this.state.maxTop
     }
     return (
       <>
@@ -178,20 +142,13 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
           className={classnames('fixed-table-container', className)}
           ref={this.content}
           onMouseOver={this.onMouseOver}
-          onMouseOut={this.onMouseOut}
-        >
+          onMouseOut={this.onMouseOut}>
           <ScrollBar className='flex-grow' offsetBottom={scrollBarOffset}>
-            <BaseTable<T>
-              // style={this.tableContentStyle}
-              getRef={this.$tbody}
-              columns={body}
-              {...commonProp}
-              />
+            <BaseTable<T> getRef={this.$tbody} columns={body} {...commonProp} />
           </ScrollBar>
           <RowContext.Provider value={this.state.rowsHeight}>
             {this.fixedLeft && (
               <BaseTable<T>
-                // getRef={this.$left}
                 className='fixed-table_fixed fixed-table_fixed-left'
                 columns={left}
                 {...commonProp}
@@ -199,7 +156,6 @@ class Table<T extends PlainObject = any> extends React.PureComponent<TableProp<T
             )}
             {this.fixedRight && (
               <BaseTable<T>
-                // getRef={this.$right}
                 className='fixed-table_fixed fixed-table_fixed-right'
                 columns={right}
                 {...commonProp}

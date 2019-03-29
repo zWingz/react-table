@@ -35,6 +35,7 @@ export function addResizeEventListener(
     'position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden;opacity: 0; pointer-events: none; z-index: -1;'
   )
   obj.onload = () => {
+    /* istanbul ignore next */
     obj.contentDocument.defaultView.addEventListener(
       'resize',
       resizeHandle,

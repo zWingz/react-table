@@ -36,7 +36,7 @@ const App = hot(module)(() => {
   return (
     <div>
       <div className='container'>
-        <Table columns={columns} dataSource={dataSource} rowKey='field1' multiLine/>
+        <Table columns={columns} offsetTop={10} dataSource={dataSource} rowKey='field1' multiLine/>
       </div>
     </div>
   )

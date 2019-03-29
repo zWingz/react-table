@@ -72,9 +72,10 @@ exports[`test table base render 1`] = `
             "current": null,
           }
         }
+        maxTop={0}
+        offsetTop={0}
         rowKey="id"
         style={Object {}}
-        top={0}
       />
     </HorizontalScrollBar>
     <ContextProvider

@@ -15,7 +15,6 @@ interface TableRowProp<T> {
 }
 
 // TODO: use React.memo instead of PureComponent when enzyme support
-
 export default class TableRow<
   T extends PlainObject = any
 > extends React.PureComponent<TableRowProp<T>> {
