@@ -11,7 +11,6 @@ export interface HorizontalScrollBarProp {
 interface HorizontalScrollBarStat {
   scrollWidth: number
   percent: number // 滚动按钮宽度占比
-  x: number // 鼠标按键x坐标
   bottom: number // 底部
   scrollLeft: number
   opacity: number // 是否需要设置透明
@@ -65,11 +64,11 @@ class HorizontalScrollBar extends React.Component<
   static defaultProps = {
     offsetBottom: 5
   }
+  x: number = 0 // 按键x坐标
 
   state: HorizontalScrollBarStat = {
     scrollWidth: 0,
     percent: 0, // 滚动按钮宽度占比
-    x: 0, // 鼠标按键x坐标
     bottom: 0, // 底部
     scrollLeft: 0,
     opacity: 1 // 是否需要设置透明
@@ -200,7 +199,7 @@ class HorizontalScrollBar extends React.Component<
    * 拖动事件
    */
   bodyMouseMoveHandle = event => {
-    const offsetX = event.clientX - this.state.x,
+    const offsetX = event.clientX - this.x,
       speed = offsetX / this.state.percent
     if (offsetX > 0) {
       this.up(speed)
@@ -229,10 +228,8 @@ class HorizontalScrollBar extends React.Component<
       opacity: val
     })
   }
-  setX(x) {
-    this.setState({
-      x
-    })
+  setX(x: number) {
+    this.x = x
   }
   setScrollLeft(val) {
     this.setState({
@@ -259,7 +256,6 @@ class HorizontalScrollBar extends React.Component<
     this.setScrollLeft(left > scrollWidth ? scrollWidth : left)
   }
   shouldComponentUpdate(nextProps, nextState) {
-    // return this.showBar || checkShow(nextState) || this.props !== nextProps
     return (
       shallowequal(this.props, nextProps) ||
       (shallowequal(this.state, nextState) &&
