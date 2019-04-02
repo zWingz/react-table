@@ -243,45 +243,49 @@ describe('test bar inner mousemove', () => {
       bottom: 10,
       percent,
       scrollWidth,
-      scrollLeft,
-      x: startX
+      scrollLeft
+      // x: startX
     })
+    wrapper.instance().x = startX
   })
   it('mousedown should only work for event.button === 0', () => {
     const inner = wrapper.find('.virtual-scroll-bar')
+    const ins = wrapper.instance()
     startX = 100
     inner.simulate('mousedown', {
       button: 1,
       clientX: startX
     })
-    expect(wrapper.state().x).toEqual(0)
+    expect(ins.x).toEqual(0)
     inner.simulate('mousedown', {
       button: 0,
       clientX: startX
     })
-    expect(wrapper.state().x).toEqual(startX)
+    expect(ins.x).toEqual(startX)
   })
   it('body should add no-select class', () => {
     expect(document.body.classList.contains('no-select')).toBeTruthy()
   })
   it('mousemove, scroll to right', () => {
     const newClientX = 200
+    const ins = wrapper.instance()
     const e = new MouseEvent('mousemove', {
       clientX: newClientX
     } as MouseEventInit)
     document.body.dispatchEvent(e)
-    expect(wrapper.state().x).toBe(newClientX)
+    expect(ins.x).toBe(newClientX)
     const speed = (newClientX - startX) / percent
     scrollLeft = scrollLeft + speed
     expect(wrapper.state().scrollLeft).toEqual(scrollLeft)
   })
   it('mousemove, scroll to rleft', () => {
     const newClientX = 78
+    const ins = wrapper.instance()
     const e = new MouseEvent('mousemove', {
       clientX: newClientX
     } as MouseEventInit)
     document.body.dispatchEvent(e)
-    expect(wrapper.state().x).toBe(newClientX)
+    expect(ins.x).toBe(newClientX)
     const speed = (newClientX - startX) / percent
     scrollLeft = scrollLeft + speed
     expect(wrapper.state().scrollLeft).toEqual(scrollLeft)
@@ -304,16 +308,17 @@ describe('test bar inner mousemove', () => {
   })
   it('body mouseUp should remove body mousemove', () => {
     const mouseUpEvent = new MouseEvent('mouseup')
+    const ins = wrapper.instance()
     document.body.dispatchEvent(mouseUpEvent)
     expect(document.body.classList.contains('no-select')).toBeFalsy()
-    const x = wrapper.state().x
+    const x = ins.x
     const newClientX = -9999
     const moveE = new MouseEvent('mousemove', {
       clientX: newClientX
     } as MouseEventInit)
     document.body.dispatchEvent(moveE)
-    expect(wrapper.state().x).not.toEqual(newClientX)
-    expect(wrapper.state().x).toEqual(x)
+    expect(ins.x).not.toEqual(newClientX)
+    expect(ins.x).toEqual(x)
   })
 })
 
