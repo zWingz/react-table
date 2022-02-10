@@ -59,7 +59,7 @@
     "husky-tslint-pre-commit": "^1.0.3",
     "jest": "^24.1.0",
     "mockjs": "^1.0.1-beta3",
-    "node-sass": "^4.9.2",
+    "node-sass": "^7.0.0",
     "poi": "^12.2.6",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
